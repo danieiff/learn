@@ -235,3 +235,33 @@ POST /d/{キー}?_rangeids で、bodyに{start}-{end}の形式を指定して実
 GET /d/{キー}?_rangeidsで現在設定されている加算枠(addids用)を返却します。
 戻り値はFeed.titleに「Addids range has been set.」が返ります。
 エラーの場合はFeed.titleにエラーメッセージが返ります。
+
+### BFFからリソース操作
+#### リクエスト
+`getEntry(url: string): any`	Entryを取得する。キーとクエリパラメータを指定する
+`getFeed(url: string, force?: boolean): any`	Feedを取得する。キーとクエリパラメータを指定する。rightsに文字列がある場合、次ページ(nextpagelink)が存在することを示す。p={nextpagelink}で次ページを取得できる。forceがtrueで全件取得
+`count(url: string): number`	件数を取得する。キーとクエリパラメータを指定する
+`post(request: any, url: string, force?: boolean): any`	親フォルダurlを指定してrequest(feed)をPOSTする。force:1000件以上登録
+`put(request: any, isbulk?: boolean, parallel?: boolean, async?: boolean): any`	request(feed)をPUTする。isbulk:1000件以上、parallel:並列実行、async:非同期実行
+`deleteEntry(url: string, revision?: number): void`	urlおよびrevisionのentryを削除する
+`deleteFolder(url: string): any`	urlとその配下のentryを削除する
+
+`getHtml(url: string): string`	指定されたurlのHTMLを取得する
+`getContent(url: string): string`	指定されたurlのコンテンツを取得する
+#### レスポンス
+setStatus(status_code: number): void	レスポンスにステータスコードnumberをセットする
+setHeader(name: string, value: string): void	レスポンスにレスポンスヘッダをセットする
+sendRedirect(location: string): void	リダイレクトを実行する
+sendError(status_code: number, message?: string): void	ステータスコードとメッセージを送信する(HTTPプロトコル)
+sendMessage(status_code: number, message: string): void	ステータスコードとメッセージを送信する(JSON)
+getStatus(): number	ステータスコードを取得する
+#### 採番
+allocids(url: string, num: number): any	指定された採番数(num)だけ採番する
+#### ページネーション
+pagenation(url: string, num: number): void	ページIndexを作成する
+getPage(url: string, num: number): any	num番目のページを取得する
+#### ページネーション
+pagenation(url: string, num: number): void	ページIndexを作成する
+getPage(url: string, num: number): any	num番目のページを取得する
+#### 他サイトのAPIを叩く
+`urlfetch(url: string, method: string, reqData?: string, headers?:any): any	指定されたurlに対してHTTPメソッド(method)を実行する。戻り値は{ status、headers、data }のJSON形式

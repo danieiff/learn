@@ -1,7 +1,7 @@
 ### CSVアップロード
 - `vtecxapi.getCsv(header, items, parent?, skip?, encoding?)`
   header: `[項目1の名前, 項目2の名前, ...]`
-  items: `['item1(int/boolean), item2, ...]` →対応するJSONの項目名。 カッコの中で型を指定可能
+  items: `['item1(int/boolean), 'item2', ...]` →対応するJSONの項目名。 カッコの中で型を指定可能
   parent: `string` →変換後のJSONの親項目を指定する。
   skip: `{CSVファイルの読み飛ばす行数}`
   encoding: `{UTF-8, Windows-31J等文字コード}`
@@ -76,18 +76,18 @@ select
   ${ITEMS.join(',') /* =>'useid,name,...,memo' */}
 from
   ${DATASET}.${TABLE} as f
-  right join
-    ( select
-        key,
-        max(updated) as updated
-      from
-        ${DATASET}.${TABLE}
-        group by
-          key
-    ) as k
-    on
-      f.updated=k.updated and
-      f.key=k.key
+  right join (
+    select
+      key,
+      max(updated) as updated
+    from
+      ${DATASET}.${TABLE}
+      group by
+        key
+  ) as k
+  on
+    f.updated = k.updated and
+    f.key = k.key
 where
   f.deleted = false
 ${ORDER}
@@ -102,3 +102,4 @@ vtecxapi.doResponseCsv(csv, 'user.csv')
 ```ts
 axios.get('/s/user.csv', {responseType: 'blob'})
 ```
+#### BigQueryからCSVダウンロード `doResponseBQcsv(sql,filename,header?)`

@@ -4,6 +4,7 @@
 `GET /d/foo`-エンドポイントURL
 `GET /d/foo/bar`: 配下にリソースをネストできる [*1]()
 `GET /d/foo?f`: 配下にあるリソース一覧
+
 :::details e: メタ情報
 vte.cxにおけるリソースのメタ情報はATOM形式
 JSONのレスポンス

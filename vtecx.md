@@ -8,6 +8,16 @@
 Common features: Account, DataBase, Mail, Excel, CSV, PDF, Barcode -[*2.主な機能*](https://vte.cx/documentation.html#index02)
 [ここ](https://qiita.com/stakezaki/items/e526ca061d8f004db7f5)からAPIサーバーを立てる[*3.サービス*](https://vte.cx/documentation.html#index03)
 
+目次
+タイトル | ファイル | status
+-|-|-
+最初 | vtecx.md　| 👈
+BFF | server.md | ✅
+CSV | server_csv.md | ✅
+PDF | server_pdf.md | 残り:スタイリング表
+BigQuery | server_bq.md |
+Barcode,QRcode| barcode_qrcode.md | 残り:スタイリング表見やすく
+Mail | server_mail.md | 途中
 
 ###
 1.グループの作成
