@@ -216,12 +216,25 @@ vtecxapi.doResponse(result) // =>[ { 'user': { 'userid': '1', 'name': '太郎', 
 `LIMIT`, `OFFSET`を使うページネーションはオフセット方式といいます。
 #### キーセット法によるページネーション
 テーブルから一意な`id`項目を`LENGTH`行ごとに抽出したもの(→キーセット)を利用して、任意ページの`LENGTH`個のデータを取得するSQLを発行する
+
 クライアント側
-```ts: /src/components/getUsers.tsx
+URLクエリパラメータ`?page=1`(とする)からページ番号を取得するフック
+```ts: src/hooks/usePage.tsx
+import { useLocation } from 'react-router-dom'
+export const usePage = () => {
+  const _search_params = useLocation().search
+  const search_params = new URLSearchParams(_search_params)
+  const page = Number(query.get('page')) || 1
+  return page
+}
+```
+ページネーションのためのキーセットを取得するリクエストと､そのキーセットと上のフックによって取得するページ番号を利用して目的のフィードをリクエストする
+```tsx: /src/components/getUsers.tsx
+import { usePage } from '../hooks/usePage'
 const shouldUpdateKeyset = useRef(true)
 const getUsers = () => {
   const [keyset, setKeyset] = useState([])
-  const [page, setPage] = useState(1)
+  const page = usePage()
   const [feed, setFeed] = useState([])
   const getFeed = () => {
     if (shouldUpdateKeyset.current) {
@@ -231,8 +244,10 @@ const getUsers = () => {
       setKeyset(_keyset.data.map(({title})=>title))
       shouldUpdateKeyset.current = false
     }
-    const _feed = await axios.get(`/s/getUsers?pagekey=${keyset[page-1].title}`)
-    setFeed(_feed)
+    if (keyset.hasOwnProperty(page-1)) {
+      const _feed = await axios.get(`/s/getUsers?pagekey=${keyset[page-1]?.title}`)
+      setFeed(_feed)
+    }
   }
   useEffect(getFeed,[])
   return // feedを描写
@@ -296,7 +311,7 @@ where
 `)
 vtecxapi.doResponse(keyset)
 ```
-2. 上で作られたページキーを利用してリクエストされたページのデータを返す
+2. 上で作られたページキーを利用して作られたリクエストに対して､フィードを返す
 ```ts: /src/server/getUsers.ts
 import * as vtecxapi from 'vtecxapi'
 import { escape } from 'sqlstring'
@@ -330,19 +345,4 @@ ${ORDER/*'userid'降順*/}
 limit ${LENGTH}
 `)
 ```
-// const index = useRef(null)
-// const total = useRef(0)
-
-// axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
-
-// const _total = await axios.get('getTotalBQ')
-// total.current = _total
-
-// if (!index) {
-//   const _index = await axios.get('/s/makeIndex')
-//   index.current = _index
-// }
-
-// _page = index.current[page]
-// const feed = await axios.get('/s/getUsers?page=_page')
-```
+\+ データの合計数を取得する､結果をフィルターする(→検索機能)など｡
