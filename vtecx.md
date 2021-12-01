@@ -243,3 +243,79 @@ ___href: "/_user/21749/company_21749/21750"
 ___href: "/_user/21750/group/company_21749"
 これで
 21749というユーザーの下にあるcompany_21749という会社に21750というユーザーが所属されていることが確認できました。
+
+### その他
+#### vw360px以下からViewPortのwidthを固定する
+```js
+!(function () {
+  const viewport = document.querySelector('meta[name="viewport"]');
+  function switchViewport() {
+    const value =
+      window.outerWidth > 360
+        ? 'width=device-width,initial-scale=1'
+        : 'width=360';
+    if (viewport.getAttribute('content') !== value) {
+      viewport.setAttribute('content', value);
+    }
+  }
+  addEventListener('resize', switchViewport, false);
+  switchViewport();
+})();
+```
+pwd
+ls
+cd
+mkdir
+touch
+mv
+cp
+rm
+cat
+wc
+head
+tail
+sort
+uniq
+grep
+sed
+awk
+xargs
+seq
+> >>
+apt
+env
+sudo
+su
+echo
+which
+source
+chmod
+ps
+kill
+history
+diff
+jobs
+bg
+fg
+curl
+git
+gh
+npm etc..
+
+
+### git
+
+1. git rebase -i HEAD~{数字}
+2. pickを変更して閉じる
+3. ファイルに変更を加える
+4. staging, commit --amend
+5. git rebase --continue
+
+### vim
+#### vimrc
+```bash
+augroup Mkdir
+  autocmd!
+  autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
+augroup END
+```
