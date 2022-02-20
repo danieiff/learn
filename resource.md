@@ -113,3 +113,5 @@ http://{サービス名}.vte.cx/d/foo?f&x
     </entry>
 </feed>
 ```
+
+contributor項目はadmin権限を持つアカウントからのみ見れる

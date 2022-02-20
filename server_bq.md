@@ -1,4 +1,4 @@
-vte.cxのデータストアをBigQueryにして、vte.cxを通して各処理SQLを実行させます
+vte.cxのデータストアをBigQueryにして、vte.cxのAPIを通してSQLを実行します
 ### 0. BigQueryの準備
 1. データセット作成
 2. BigQueryのサービスアカウント秘密鍵作成
@@ -27,7 +27,7 @@ _bigquery.location=asia-northeast1
 ```
 3. `npm run upload`
 ### 登録
-初回登録時にvte.cx側のスキーマから`key (STRING)`, `updated (DATETIME)`,`deleted (BOOL)`項目を持つテーブル作成されます
+初回登録時にvte.cx側のスキーマの項目と、`key (STRING)`, `updated (DATETIME)`,`deleted (BOOL)`項目を持つテーブル作成されます
 `postBQ(request: any, async: boolean, tablenames?: any): void`
 #### APIの解説
 request:
@@ -117,7 +117,7 @@ vtecxapi.doResponse(result)
 ```ts: /src/components/read.ts
  const read = async () => await axios.get('/s/readBQ')
 ```
-###　編集
+### 編集
 編集するデータの`key`で勝手に新しく登録します。
 ### 削除
 `postBQ`→引数`request`の`link`の`___href`がテーブルに`key`項目として登録される。
@@ -179,11 +179,11 @@ const ITEMS = [ 'name', 'userid', 'gender', 'birth', 'age', 'tel', 'email', 'add
 //　SQLクエリを組み立てる
 // 検索のためのクエリ
 // クエリパラメータ'search'から'name'項目の検索キーワードを設定
-const search = encodeURIComponent(vtecxapi.getQueryString('search'))
+const search = vtecxapi.getQueryString('search')
 const name_search = search ? ` and name = "${escape(search)}"` : ''
 // ページネーションのためのクエリ
 // クエリパラメータ'page'からページを設定
-const page_num = Number(encodeURIComponent(vtecxapi.getQueryString('page'))) || 1
+const page_num = Number(vtecxapi.getQueryString('page')) || 1
 const pagination = `limit 5 offset ${escape(page_num - 1)}` // 5件ずつ
 const conditions = `${name_search} order by f.userid desc ${pagination}`
 const total = vtecxapi.getBQ(sql_total) // =>[ { 'title': '合計数' } ] sql文で'as title'としているため。
@@ -234,7 +234,7 @@ export const usePage = () => {
 ```tsx: /src/components/getUsers.tsx
 import { usePage } from '../hooks/usePage'
 const shouldUpdateKeyset = useRef(true)
-const getUsers = () => {
+const Users = () => {
   const [keyset, setKeyset] = useState([])
   const page = usePage()
   const [feed, setFeed] = useState([])
@@ -342,9 +342,11 @@ from
     f.key = k.key
 where
   f.deleted = false and
-  userid >= ${pagekey/*'userid'がページキーである'userid'と等しいか、それより小さい行を'LENGTH'分だけ抽出*/}
+  cast(userid as int) >= ${pagekey/*'userid'がページキーである'userid'と等しいか、それより小さい行を'LENGTH'分だけ抽出*/}
 ${ORDER/*'userid'降順*/}
 limit ${LENGTH}
 `)
 ```
 \+ 必要に応じてデータの合計数を取得する､結果をフィルターする(→検索機能)など｡
+### 注意
+sql の `select`と前の\`の間と`select`の後の句の間改行あるとエラーになる避ける
