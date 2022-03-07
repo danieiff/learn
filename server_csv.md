@@ -1,67 +1,45 @@
-### CSVアップロード
-- `vtecxapi.getCsv(header, items, parent?, skip?, encoding?)`
-  header: `[項目1の名前, 項目2の名前, ...]`
-  items: `['item1(int/boolean), 'item2', ...]` →対応するJSONの項目名。 カッコの中で型を指定可能
-  parent: `string` →変換後のJSONの親項目を指定する。
-  skip: `{CSVファイルの読み飛ばす行数}`
-  encoding: `{UTF-8, Windows-31J等文字コード}`
-#### 実装例
-```tsx: /src/components/UploadCsv.tsx
+## CSVアップロード
+### クライアントサイド
+```tsx: /src/components/UploadCSV.tsx
 // import
-const UploadCsvForm: React.VFC = () => {
+const UploadCSVForm: React.VFC = () => {
   const [state, setState] = useState({})
   const handleSubmit = async (e: React.FormEvent<any>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    // 画像は、/d/foo/{key} としてサーバに保存されます
-    try {
-      await axios.post( '/s/getcsv', formData, { headers: { 'X-Requested-With': 'XMLHttpRequest' } } )
-    } catch(e) {
-      alert(e.response? 'error: ' + JSON.stringify(e.response): 'error')
-    }
+    await axios.post( '/s/readCSV', formData, { headers: { 'X-Requested-With': 'XMLHttpRequest' } } )
   }
   return (
-    <Form horizontal onSubmit={handleSubmit}>
-      <FormGroup>
-        <FormControl type="file" name="csv" />
-      </FormGroup>
-        <FormGroup>
-          <Button type="submit" className="btn btn-primary">
-              登録
-          </Button>
-        </FormGroup>
-    </Form>
+    <form  onSubmit={handleSubmit}>
+      <input type="file" name="csv" />
+      <button type="submit" > 登録 </button>
+    </form>
   )
 }
 ```
-```tsx: /server/GetCsv.ts
+### サーバーサイド
+```tsx: /server/readCSV.ts
 import * as vtecxapi from 'vtecxapi'
 
-const items = ['item1', 'item2(int)', 'item3(int)']
-const header = ['年月日', '件数', '合計']
-const parent = 'order'
-const skip = 1
-const encoding = 'UTF-8' //const encoding = 'Windows-31J'
-// CSV取得
+const items = ['item1', 'item2(int)', 'item3(int)'] // プロパティ名 (型を指定可能)
+const header = ['Date', 'Count', 'Total_Count'] // ヘッダのプロパティ名
+const parent = 'csv' // 変換後のJSONの親プロパティ名
+const skip = 1 // CSVファイルの読み飛ばす行数
+const encoding = 'UTF-8' //'Windows-31J'等
+
 const result = vtecxapi.getCsv(header, items, parent, skip, encoding)
+
 vtecxapi.log(JSON.stringify(result))
+// CSVデータ(/data/sample.csv)
+// // 1行skip
+// 年月日,件数,合計
+// "2017/7/5",3,3
+// "2017/7/6",5,8
+// "2017/7/7",2,10
 ```
-```
-CSVデータ(/data/sample.csv)
-// 1行skip
-年月日,件数,合計
-"2017/7/5",3,3
-"2017/7/6",5,8
-"2017/7/7",2,10
-```
-### CSV出力
-- csvを返すファイルは *`{任意}.csv.ts/tsx`* とする
-- `vtecxapi.getBQ(sql)` vte.cxからBigQueryに対してSQLを実行
-- `vtecxapi.doResponseCsv([ header, row1, row2, ... ], outfilename)`
-  header:  `[項目1の名前, 項目2の名前, ...]`
-  row: `[項目1の値,項目2の値, ...]` →headerと項目の順番を対応させる
-  outfilename: `{任意のファイル名}` →レスポンスヘッダのcontent-disposition: "attachment; filename=\"{csvのファイル名}\""
-#### 実装例
+
+## CSV出力
+### サーバーサイド
 ```ts: user.csv.ts
 import * as vtecxapi from 'vtecxapi'
 
@@ -95,11 +73,12 @@ ${ORDER}
 const feed = vtecxapi.getBQ(sql) // [ {userid: 1, name: '{名前}', ... }, ... ]
 const body = feed.map((entry: any) => ITEMS.map(item => entry[item] ?? '未登録')) // [ ['{ID}', '{名前}', ..., '{備考欄}'], ["], ["], ... ]
 const csv = [TITLES, ...body]
-
-vtecxapi.doResponseCsv(csv, 'user.csv')
+const outfilename = 'user.csv' // レスポンスヘッダのcontent-disposition: "attachment; filename=\"{csvのファイル名}\""
+vtecxapi.doResponseCsv(csv,outfilename)
 ```
+### クライアントサイド
 `GET '/s/user.csv'`
 ```ts
 axios.get('/s/user.csv', {responseType: 'blob'})
 ```
-#### BigQueryからCSVダウンロード `doResponseBQcsv(sql,filename,header?)`
+## BigQueryからCSV出力 `doResponseBQcsv(sql,filename,header?)`
