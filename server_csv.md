@@ -82,3 +82,5 @@ vtecxapi.doResponseCsv(csv,outfilename)
 axios.get('/s/user.csv', {responseType: 'blob'})
 ```
 ## BigQueryからCSV出力 `doResponseBQcsv(sql,filename,header?)`
+
+## csvクライアント表示

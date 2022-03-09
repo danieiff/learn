@@ -41,7 +41,8 @@ vtecxapi.sendMail(mailentry, to, cc, bcc, attachments)
 /Keyは任意
 ${URL} → WebサーバーのURL
 ${RXID=/Key} → キーと送信先メールアドレスのRXIDをつけたURL
-${LINK=/Key} → キーと送信先メールアドレスのリンクトークンをつけたURL
+${LINK=/Key} → キーと送信先メールアドレスのリンクトークンをつけたURL ログイン状態にならない
+  Keyに対して許可される操作 検索, POST、PUT、DELETE, 配下へPOST(自動採番）
 ${RXID=/setpass.html}&value=abc → https://test.vte.cx/setpass.html?_RXID=xxx&value=abc
 Keyに含まれる# → 送信先ユーザのUID
 送信先が複数 または サービスにユーザー登録されていない (メールアドレスに含まれるアカウント使用可能文字から、アカウント検索される） →→ ブランクに変換
