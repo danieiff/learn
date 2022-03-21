@@ -76,3 +76,6 @@ const param: Param = {
 }
 vtecxapi.saveFiles(param)
 ```
+
+`PUT /d/foo?_content` テキストやblobを格納
+Content-Type:  image/pngやtext/htmlなど実際に格納したコンテンツに合ったタイプを指定

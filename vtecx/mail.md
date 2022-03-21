@@ -1,6 +1,7 @@
 ## メール送信
 ### メール送信設定
-```xml: property.xml
+/_settings/properties
+```xml
 <feed>
 <entry>
 <!-- linkなど メール設定のために以下を追記する -->
@@ -11,6 +12,12 @@ _mail.password=メール送信アカウントのパスワード
 _mail.smtp.host=メール送信ホスト
 _mail.smtp.port=メール送信ポート
 _mail.smtp.auth=true/false</rights>
+</entry><entry>
+  <link rel="self" href="/_settings/adduser" />
+  <title>{メールのタイトル}</title>
+  <summary>{テキストメール本文}</summary>
+  <content  type="text/html">{HTMLメール本文}</content>
+  <link href="/_settings/adduser" rel="self"/>
 </entry>
 </feed>
 ```
@@ -25,7 +32,7 @@ const mailentry = {
     content: {
       ______text: `<html><body><pre>
       hello html mail
-      <img src="CID:/_html/img/ajax-loader.gif">  ${/* インライン画像　CIDの後にKey */}
+      <img src="CID:/_html/img/ajax-loader.gif">  ${/* インライン画像　CIDの後にKEY */}
       </pre></body></html>`
     }
   }
@@ -38,15 +45,14 @@ const attachments = ['/_html/img/vtec_logo.png']
 vtecxapi.sendMail(mailentry, to, cc, bcc, attachments)
 ```
 ### リンクを添付
-/Keyは任意
 ${URL} → WebサーバーのURL
-${RXID=/Key} → キーと送信先メールアドレスのRXIDをつけたURL
-${LINK=/Key} → キーと送信先メールアドレスのリンクトークンをつけたURL ログイン状態にならない
-  Keyに対して許可される操作 検索, POST、PUT、DELETE, 配下へPOST(自動採番）
+${LINK=/KEY} → キーと送信先メールアドレスのリンクトークンをつけたURL ログイン状態にならない
+  KEYに対して許可される操作 検索, POST、PUT、DELETE, 配下へPOST(自動採番）
 ${RXID=/setpass.html}&value=abc → https://test.vte.cx/setpass.html?_RXID=xxx&value=abc
-Keyに含まれる# → 送信先ユーザのUID
+KEYに含まれる# → 送信先ユーザのUID
 送信先が複数 または サービスにユーザー登録されていない (メールアドレスに含まれるアカウント使用可能文字から、アカウント検索される） →→ ブランクに変換
-## メール受信
+
+### メール受信
 ```ts: //server/getmail.ts
 import * as vtecxapi from 'vtecxapi'
 
