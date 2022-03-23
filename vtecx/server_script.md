@@ -1,37 +1,37 @@
 ### サーバーサイドスクリプトでリソース操作
-- try catchでエラーハンドリングされていない、ランタイムエラーが発生すると、ステータスコードと`{ "feed": { "title": "エラー文" } }`をレスポンスする
-#### リクエスト
+- try catchでエラーハンドリングされてエラーがないと200で、されていないとランタイムエラーが発生すると、ステータスコード400と`{ "feed": { "title": "エラー文" } }`をレスポンスする
+#### リソース操作
 getRequest(): any	リクエストオブジェクト(feed.entry[0] ～ feed.entry[n])を取得する
 getPathinfo(): string	PATHINFO(リクエストURLのパス）を取得する
 getQueryString(param?: string): string	URLパラメータ(クエリストリング)を取得する
-httpmethod(): string	HTTPメソッド(GET,POST,PUT,DELETE)を取得する
 getUriAndQueryString(): string	PATHINFO+クエリストリングを取得する
 getContentType(): string	Content Typeを取得する
 getHeaders(): any	リクエストヘッダを取得する
 getCookies(): any	Cookieを取得する
 getHeaders(): any	リクエストヘッダを取得する
-uid(): number	uidを取得する
 getSettingValue(key: string): string	keyを指定してサービス設定情報を取得する
 getRemoteIP(): string	送信元のIPアドレスを取得する
-adduserByAdmin(feed: any): any	管理者権限でユーザを追加する
+getStatus(): number	ステータスコードを取得する
+getEntry(url: string): any	Entryを取得する。キーとクエリパラメータを指定する
+getFeed(url: string, force?: boolean): any	Feedを取得する。キーとクエリパラメータを指定する。forceがtrueで全件取得
+getHtml(url: string): string	指定されたurlのHTMLを取得する
+getContent(url: string): string	指定されたurlのコンテンツを取得する
+count(url: string): number	件数を取得する。キーとクエリパラメータを指定する
+uid(): number	uidを取得する
+httpmethod(): string	HTTPメソッド(GET,POST,PUT,DELETE)を取得する
 
-`getEntry(url: string): any`	Entryを取得する。キーとクエリパラメータを指定する
-`getFeed(url: string, force?: boolean): any`	Feedを取得する。キーとクエリパラメータを指定する。rightsに文字列がある場合、次ページ(nextpagelink)が存在することを示す。p={nextpagelink}で次ページを取得できる。forceがtrueで全件取得
-`count(url: string): number`	件数を取得する。キーとクエリパラメータを指定する
-`post(request: any, url: string, force?: boolean): any`	親フォルダurlを指定してrequest(feed)をPOSTする。force:1000件以上登録
-`put(request: any, isbulk?: boolean, parallel?: boolean, async?: boolean): any`	request(feed)をPUTする。isbulk:1000件以上、parallel:並列実行、async:非同期実行
-`deleteEntry(url: string, revision?: number): void`	urlおよびrevisionのentryを削除する
-`deleteFolder(url: string): any`	urlとその配下のentryを削除する
+post(request: any, url: string, force?: boolean): any	親フォルダurlを指定してrequest(feed)をPOSTする。force:1000件以上登録
+put(request: any, isbulk?: boolean, parallel?: boolean, async?: boolean): any	request(feed)をPUTする。isbulk:1000件以上、parallel:並列実行、async:非同期実行
+deleteEntry(url: string, revision?: number): void	urlおよびrevisionのentryを削除する
+deleteFolder(url: string): any	urlとその配下のentryを削除する
 
-`getHtml(url: string): string`	指定されたurlのHTMLを取得する
-`getContent(url: string): string`	指定されたurlのコンテンツを取得する
 #### レスポンス
+doResponse(feed: any, status_code: number ) フィードを返す
 setStatus(status_code: number): void	レスポンスにステータスコードnumberをセットする
 setHeader(name: string, value: string): void	レスポンスにレスポンスヘッダをセットする
 sendRedirect(location: string): void	リダイレクトを実行する
 sendError(status_code: number, message?: string): void	(HTTPプロトコル)
 sendMessage(status_code: number, message: string): void	(JSON)
-getStatus(): number	ステータスコードを取得する
 
 #### セッション
 /_settings/properties で`_session.minute=30` : [30]分セッション有効
@@ -48,12 +48,8 @@ deleteSessionEntry(name: string): void	セッションにあるentryを削除す
 deleteSessionString(name: string): void	セッションにある文字列(string))を削除する
 deleteSessionLong(name: string): void	セッションにある数値を削除する
 incrementSession(name: string, num: number): void	セッションにある数値をnumだけ加算する
-
 #### 他サイトのAPIを叩く
-`urlfetch(url: string, method: string, reqData?: string, headers?:any): any	指定されたurlに対してHTTPメソッド(method)を実行する。戻り値は{ status、headers、data }のJSON形式
-
-#### xls出力
-toXls(data: any, inputxls: string, outfilename: string): void	XLSを出力する
+`urlfetch(url: string, method: string, reqData?: string, headers?:any): any	指定されたurlに対してHTTPリクエストを実行する。戻り値は{ status、headers、data }のJSON形式
 
 ### サービス管理画面にログ出力
 - `vtecxapi.log(subtitle: string, title: string, content: string): void`
@@ -63,9 +59,8 @@ toXls(data: any, inputxls: string, outfilename: string): void	XLSを出力する
 ### セキュリティ
 - ブラウザでのユーザー入力等をSQL等に含めるとき特殊文字をエスケープする
 ### SSR
-`vtecxapi.doResponseHtml(html: string): void`
-以下のファイルssr.html.tsxをビルド&デプロイ後、/s/ssr.htmlにブラウザからアクセスできる。
-```tsx: server/ssr.html.tsx
+ブラウザから/s/ssr.htmlを表示できる
+```tsx: src/server/ssr.html.tsx
 import * as vtecxapi from 'vtecxapi'
 import * as React from 'react'
 import * as ReactDOMServer from 'react-dom/server'
@@ -73,13 +68,6 @@ import * as ReactDOMServer from 'react-dom/server'
 const element = <h3> Hello, World! </h3>
 const html = ReactDOMServer.renderToStaticMarkup(element)
 vtecxapi.doResponseHtml(html)
-```
-### JSONを返す
-`doResponse(feed: any, status_code?: number): void`
-```ts
-import * as vtecxapi from 'vtecxapi'
-const feed = vtecxapi.getFeed('/foo')
-vtecxapi.doResponse(feed)
 ```
 ### バッチジョブ
 `/_settings/propertiesエントリーのrights`に以下を記述
@@ -93,6 +81,7 @@ vtecxapi.doResponse(feed)
 `title`にジョブ実行ステータス `subtitle`にPod名
 
 ジョブ管理ステータス waiting : プロパティの設定を削除でキャンセル可 running succeeded failed
+
 ### `/_settings/properties.xml rights`にサーバサイドJSのタイムアウト設定
 productionサービスのみ有効 デフォルト: 300秒
 サーバー内実行時間: `_javascript.exectimeout={タイムアウト秒}`

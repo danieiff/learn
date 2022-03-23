@@ -1,10 +1,9 @@
-vte.cxのデータストアをBigQueryにして、vte.cxのAPIを通してSQLを実行します
-### 0. BigQueryの準備
+BigQueryに対して、vte.cxのAPIを通してSQLを実行してフィード、エントリをCRUD
+### 0. GCP BigQueryの準備
 1. データセット作成
 2. BigQueryのサービスアカウント秘密鍵作成
-  サービスアカウントとは、Googleの各サービスに対する権限を持つアカウントです。Googleのサービスに対しAPIリクエストを行う際に認証情報として使用します。
 ### 1. vte.cx側の連携設定
-1. setup/_settings直下にbigquery.jsonをおく
+1. setup/_settings/bigquery.json
 ```json
 {
     "type": "XXX",
@@ -19,36 +18,17 @@ vte.cxのデータストアをBigQueryにして、vte.cxのAPIを通してSQLを
     "client_x509_cert_url": "XXX"
 }
 ```
-2. `properties.xml`の`rights`項目に三行追記
-```
+2. setup/_settings/properties.xml rights項目
 _bigquery.projectid={プロジェクトID}
 _bigquery.dataset={データセット名}
 _bigquery.location=asia-northeast1
-```
-3. `npm run upload`
+3. npm run upload
+
 ### 登録
-初回登録時にvte.cx側のスキーマの項目と、`key (STRING)`, `updated (DATETIME)`,`deleted (BOOL)`項目を持つテーブル作成されます
 `postBQ(request: any, async: boolean, tablenames?: any): void`
-#### APIの解説
-request:
-```xml: template.xml抜粋
-<content>foo
- bar(string)
- baz(string)</content>
-```
-`request`↓は上のスキーマに対応する
-```
-[
-  {
-    foo: { bar: 'test', baz: 'テスト' },
-    link: [{ ___rel: 'self', ___href: 'エントリごとに一意' }]
-  }
-]
-```
-`link`の`___rel: 'self'`に対して、`___href`は通例`'/{エンドポイントのキー名}/{採番処理で振られたID番号}'`とする
-`___href`の値がBigQueryテーブルに`key`項目として登録されます
-async:_
-tablenames: `{ '第一階層の項目名' : 'テーブル名' }` 指定することで異なるテーブルに登録できる。
+初回にvte.cxのスキーマ項目と、`key (STRING)`, `updated (DATETIME)`,`deleted (BOOL)`項目を持つテーブル作成される
+request: フィードの形 linkのhrefの値がBigQueryテーブルに`key`項目として登録される
+tablenames: `{ '第一階層の項目名' : 'テーブル名' }` デフォルトで第一階層の項目名がテーブル名
 #### 上のスキーマでの実装例
 ```ts: /src/server/registerBQ.ts
 import * as vtecxapi from 'vtecxapi'
@@ -76,9 +56,10 @@ axios.put('/s/registerBQ', [{ foo }] ) // 通例としてPOSTよりPUTを使う
 ```
 ### 取得
 `getBQ(sql: string, parent?: string): any`
-parent: 実行結果はparentの子要素になる。エントリ内でスキーマやATOM項目にない項目を指定するとエラー
+parent: 実行結果 `{ [parent]: 'スキーマ上で[parent]の子' }` (スキーマの構造)
 SQLを実行して取り出したデータを返す
-データの更新はなく常に追記されるため、同じ`key`のうち `updated`が最新かつ`deleted=false`のものを取得するSQLを実行させる
+データの更新はなく常に追記されるため、同じ`key`のうち `updated`が最新かつ`deleted=false`のものを取得するSQLを実行
+sql文のなかに余計な空行があるとエラーになるので注意
 #### 実装例
 ```ts: /src/server/readBQ.ts
 import * as vtecxapi from 'vtecxapi'
@@ -118,7 +99,7 @@ vtecxapi.doResponse(result)
  const read = async () => await axios.get('/s/readBQ')
 ```
 ### 編集
-編集するデータの`key`で勝手に新しく登録します。
+`postBQ`でkeyを指定して上書き
 ### 削除
 `postBQ`→引数`request`の`link`の`___href`がテーブルに`key`項目として登録される。
 `deleteBQ`→引数`keys: string[]`にテーブルの`key`項目を入れる
@@ -126,8 +107,7 @@ vtecxapi.doResponse(result)
 
 `deleteBQ(keys: string[], async: boolean, tablenames?:any): void`
 keys: `linkのhref項目`
-async:_
-tablenames: `{ '第一階層の項目名' : 'テーブル名' }` →異なるテーブルで削除
+tablenames: `{ '第一階層の項目名' : 'テーブル名' }` 2つが異なるときに指定
 #### 実装例
 ```ts: /src/components/delete.tsx
 // userエントリの形 { userid: 1 , name: 太郎, ... }
@@ -226,7 +206,7 @@ import { useLocation } from 'react-router-dom'
 export const usePage = () => {
   const _search_params = useLocation().search
   const search_params = new URLSearchParams(_search_params)
-  const page = Number(query.get('page')) || 1
+  const page = Number(search_params.get('page')) || 1
   return page
 }
 ```
@@ -313,7 +293,7 @@ where
 `)
 vtecxapi.doResponse(keyset)
 ```
-2. 上で作られたページキーを利用して作られたリクエストに対して､フィードを返す
+2. ページキーを利用してページごとにフィードを返す
 ```ts: /src/server/getUsers.ts
 import * as vtecxapi from 'vtecxapi'
 import { escape } from 'sqlstring'
@@ -347,6 +327,3 @@ ${ORDER/*'userid'降順*/}
 limit ${LENGTH}
 `)
 ```
-\+ 必要に応じてデータの合計数を取得する､結果をフィルターする(→検索機能)など｡
-### 注意
-sql の `select`と前の\`の間と`select`の後の句の間改行あるとエラーになる避ける

@@ -1,4 +1,4 @@
-## ユーザー
+## ユーザー  →個人情報、権限
 ### メールアドレスとアカウント
 メール認証 → ユーザー登録
 メールアドレス = ログインID (+以降@までを無視して送信しますが受信では無視しない。ピリオド(.)無視 Gmailのルールを使用)
@@ -47,6 +47,7 @@ POST|PUT /d?_adduserByAdmin
 リクエストデータであるフィードの、エントリは↑の{ユーザーアカウント}を{メールアドレス}にしたもの
 メール項目を省略すると/_settings/adduserByAdminエントリでメール送信する
 
+サーバーサイドスクリプトで vtecxapi.adduserByAdmin(feed: any): any	管理者権限でユーザを追加する
 ### パスワードリセット
 ↑↑(name項目を除く)を POST /d/?_passreset reCAPTCHAが要求されます。
 メール項目を省略すると、/_settings/passresetエントリでメール送信する
@@ -153,6 +154,19 @@ const data = [{
 /_settings/template rightsタグ
 {エントリ項目名}[{Index設定}|#(暗号化項目設定)]={{UID|groupのKEY(url)}+{R|W|RW (読み書き)}[, ...複数件]}
 
+## 署名
+エントリのlink項目のKEY(selfかalias)に署名をつけることでユーザが承認したことを記録
+<link rel="{self | alternate}" href="{KEY}" title="{REVISION},{uid},{署名}" /> `{ link: [{ ___rel:'{self|alternate}', ___href: '{KEY}', ___title: '{REVISION},{uid},{署名}' }] }`
+
+ユーザーが、Update(PUTリクエスト)権限を有する/_user/{ログインしている自uid}/{KEYの残り部分} に対して PUT {KEY}?_signature&_revision={REVIISION(任意項目)}
+成功200 A signature has been applied. ログインしていない場合401 KEYに署名する権限がない場合403
+既に署名が付いている場合はREVISIONを+1し、updated項目を更新
+
+### 署名削除 DELETE {KEY}?_signature linkタグのtitle属性に-が設定
+成功200 ログインしていない場合401 KEYに署名する権限がない403
+
+### 署名検証 GET {署名検証したいKEY}?_signature キーのエントリーの参照権限が必要
+成功200 署名不正412 The signature is invalid. キーのエントリー参照権限なし403
 
 ## DoS攻撃対策
 ログイン失敗で/_security/{アカウント認識文字列}/{IPアドレス}の認証失敗カウンタが1000回(デフォルト)を超えると、ユーザ・IPアドレスの組み合わせがIP Blacklistに追加されてリクエストは認証エラーになる

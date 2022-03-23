@@ -1,9 +1,10 @@
 ## 基本概念
 エントリ XML JSON
-リソース フォルダとエンドポイント フィード エントリ,(javascript上でのリクエスト)の関係 エントリとフィードの再帰構造
+リソース フォルダとエンドポイント フィード エントリ,(javascript上でのリクエスト)の関係
 KEY id link href rel
 アカウント
 トランザクション
+リクエスト、レスポンスのデータの形式の制限 スキーマかATOMの任意項目
 ## 環境構築
 ### プロジェクトリポジトリ
 npm install create-vtecx-app
@@ -66,6 +67,5 @@ HTTPメソッドで'/s/{ファイル名}'で呼び出す
 
 ### npm run upload/download
 
-folderacls.xml/.json違い
 
 download時 管理画面から出力ボタンを押した後に、npm run download

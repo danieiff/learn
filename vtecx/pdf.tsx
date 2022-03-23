@@ -12,13 +12,13 @@ const element = (
     <body>
       <div className='_page' style={pdf_styles._page}>
         <table style={pdf_styles._table}>
-          // ↓ この中を編集
+          // === ココ編集 ===
           <tr>
             <td>
               <p> Hello World! </p>
             </td>
           </tr>
-          // ↑
+          // === ===
         </table>
       </div>
     </body>
@@ -26,7 +26,7 @@ const element = (
 )
 const dom_str = ReactDOMServer.renderToStaticMarkup(element)
 const fullpage_n = 1
-const outfilename = 'test.pdf' 
+const outfilename = 'test.pdf'
 vtecxapi.toPdf( fullpage_n, dom_str, outfilename /* 結合するベースPDFファイルパス */)
 
 // src/pdf/pdf_styles.ts
@@ -164,4 +164,39 @@ const pdf_styles = {
   //  linedushoff	描画する線を破線にする場合、非表示部分の長さ [0]
   //  color: 線の色 [`#000000`]
   //}
+}
+
+// <div class="_barcodeEAN" {...barcode_params.jan}> JAN(EAN、UPC)
+const _jan = {
+  // value: バーコードに表示する値 [`4512345678901`]
+  // height: `30`
+  // size: 文字サイズ [`10`]
+  // width: `0.75`
+  // font: フォント名 文字を表示しない場合"null"を指定する。
+}
+
+// <div class="_barcodeNW7" {...barcode_params.nw7}> NW-7（CODABAR）
+const nw7 = {
+  // ...jan
+  // startstop: スタートストップ文字の有無 [`true`]
+}
+
+// <div class="_barcode39" {...barcode_params.code39}>
+const code39 = {
+  // ...nw7
+  // extended: 拡張 [`true`]
+}
+
+// <div class="_barcode128" {...barcode_params.code128}>
+const code128 = {
+  // ...jan
+  // codetype: "UCC"（CODE128_UCC）|"RAW"（CODE128_RAW）デフォルトCODE128
+}
+
+// <div class="_qrcode" {...barcode_params.qr}>
+const qr = {
+  // version: 型番（シンボルの大きさ）0(デフォルト)～10
+  // errorcorrectionlevel: 誤り訂正レベル 'L'(コードの7%復元可能)|'M'(15% デフォルト)|'Q'(25%)|'H'(30%)
+  // cellsize: セルのサイズ(pixel) '1'(デフォルト)～'4'
+  // margin: 余白(pixel) '0'(デフォルト)～'32'
 }
