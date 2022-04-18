@@ -53,7 +53,8 @@ KEYに含まれる# → 送信先ユーザのUID
 送信先が複数 または サービスにユーザー登録されていない (メールアドレスに含まれるアカウント使用可能文字から、アカウント検索される） →→ ブランクに変換
 
 ### メール受信
-```ts: //server/getmail.ts
+```ts
+//server/getmail.ts
 import * as vtecxapi from 'vtecxapi'
 
 const settings: { [index: string]: string } = {}

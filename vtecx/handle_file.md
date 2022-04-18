@@ -79,3 +79,6 @@ vtecxapi.saveFiles(param)
 
 `PUT /d/foo?_content` テキストやblobを格納
 Content-Type:  image/pngやtext/htmlなど実際に格納したコンテンツに合ったタイプを指定
+
+getContentType(): string	Content Typeを取得する
+getContent(url: string): string	指定されたurlのコンテンツを取得する

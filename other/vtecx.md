@@ -16,6 +16,18 @@
   switchViewport();
 })();
 ```
+##
+```js
+const segmenter = new Intl.Segmenter();
+
+function reverseStr(str) {
+  let ret = "";
+  for (const segment of segmenter.segment(str)) {
+    ret = segment.segment + ret;
+  }
+  return ret;
+}
+```
 pwd
 ls
 cd
@@ -94,3 +106,21 @@ expectによるコマンド自動化
 テストファイル(ユーザー追加など)
 
 ファイルの扱い (クライアント、サーバースクリプト)
+
+### Cookie
+httpOnly
+SameSite=strict
+secure=true
+ユーザーがサイトにリクエストを送信するたびに、必ずセッションID（セッションIDはユーザーから送信されたcookieから取り出します）を使ってアカウントの詳細情報をデータベースまたはキャッシュから取り出してください（どちらを使うかはサイトの規模によります）。
+local storage はクライアントのみで完結 Javascriptからアクセス可 string型のみ 同期処理、サービスワーカーから操作できないのでパフォーマンス悪い CDN(やリモートリポジトリ)の汚染されたライブラリからいつでもXSSの可能性がある
+cookie (httpOnly)はサーバーからのみ読める
+indexedDB 型情報保存可https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+
+webアプリをオフラインで動かす IndexedDBとCache API https://developers.google.com/web/fundamentals/instant-and-offline/web-storage/cache-api
+
+特異なUnicode https://github.com/Codepoints/awesome-codepoints
+
+# スマホアプリ
+## ダウンロードリンク
+https://play.google.com/intl/us-en/badges/
+https://tools.applemediaservices.com

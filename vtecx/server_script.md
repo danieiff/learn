@@ -5,7 +5,6 @@ getRequest(): any	リクエストオブジェクト(feed.entry[0] ～ feed.entry
 getPathinfo(): string	PATHINFO(リクエストURLのパス）を取得する
 getQueryString(param?: string): string	URLパラメータ(クエリストリング)を取得する
 getUriAndQueryString(): string	PATHINFO+クエリストリングを取得する
-getContentType(): string	Content Typeを取得する
 getHeaders(): any	リクエストヘッダを取得する
 getCookies(): any	Cookieを取得する
 getHeaders(): any	リクエストヘッダを取得する
@@ -15,7 +14,6 @@ getStatus(): number	ステータスコードを取得する
 getEntry(url: string): any	Entryを取得する。キーとクエリパラメータを指定する
 getFeed(url: string, force?: boolean): any	Feedを取得する。キーとクエリパラメータを指定する。forceがtrueで全件取得
 getHtml(url: string): string	指定されたurlのHTMLを取得する
-getContent(url: string): string	指定されたurlのコンテンツを取得する
 count(url: string): number	件数を取得する。キーとクエリパラメータを指定する
 uid(): number	uidを取得する
 httpmethod(): string	HTTPメソッド(GET,POST,PUT,DELETE)を取得する

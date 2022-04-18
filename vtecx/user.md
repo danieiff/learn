@@ -17,16 +17,16 @@ title ユーザーアカウント
 subtitle ニックネーム (使わない)
 
 GET /d/?_whoami 現在ログインしているユーザエントリ ログインしていない場合 401
-PUT /d/?_revokeuser={ユーザアカウント} 一時Revokdedにする ユーザ管理者が実行可
-PUT /d/?_activateuser={ユーザアカウント} ↑をActivatedにする
+PUT /d/?_revokeuser={ユーザアカウント} 一時Revokdedにする ユーザ管理者が実行可 (?_deleteuserと同じ指定方法)
+PUT /d/?_activateuser={ユーザアカウント} ↑をActivatedにする (?_deleteuserと同じ指定方法)
 DELETE /d/?_canceluser ログインユーザ Cancelledに変更 ログインユーザ自身のみ実行可
 GET /d/?_uid feedのtitleに自uidがセット ログインしていない場合 401
 GET /d/?_account feedのtitleにユーザアカウントがセット ログインしていない場合 401
 GET /d/?_login ログイン画面 ログイン認証が行われセッションを開始 パスワードはハッシュ化され、ワンタイムトークン(WSSE)としてリクエストされます。２回のログイン認証に失敗するとreCAPTCHA認証が必要
 GET /d/?_logout セッションが破棄
 
-### ユーザ仮登録 機械的に実行されることを防ぐためreCAPTCHAが要求されます。
-メール送信設定 /_settings/properties
+### ユーザ仮登録 reCAPTCHAが必要
+メール送信設定 /_settings/adduser
 ```ts
 const data = [
   {
@@ -37,22 +37,55 @@ const data = [
     content: '{HTMLメール本文}'
   }
 ]
-// POST /d?_adduser
+// POST /d?_adduser&g-recaptcha-token=${キャプチャトークン}
 ```
+ユーザーステータスがInterim"(仮登録)、"Cancelled"(退会)なら上書き、以外なら409エラー(登録済み)
 メール本文に${RXID=KEY}を含める ユーザーがワンタイムトークン(RXID)がついたURLを踏むと本登録
 
 ### 管理者によるユーザ登録
-POST|PUT /d?_adduserByAdmin
+PUT /d?_adduserByAdmin
 ユーザ管理者(/_group/$useradmin/配下のユーザー)が実行して、複数のエントリ(複数のユーザ)を本登録
 リクエストデータであるフィードの、エントリは↑の{ユーザーアカウント}を{メールアドレス}にしたもの
 メール項目を省略すると/_settings/adduserByAdminエントリでメール送信する
 
 サーバーサイドスクリプトで vtecxapi.adduserByAdmin(feed: any): any	管理者権限でユーザを追加する
-### パスワードリセット
-↑↑(name項目を除く)を POST /d/?_passreset reCAPTCHAが要求されます。
-メール項目を省略すると、/_settings/passresetエントリでメール送信する
-メールのワンタイムトークン(RXID)リンクをユーザがクリックするとパスワード再設定
+### パスワードリセット reCAPTCHA必要
+```tsx
+const data = [
+  {
+    contributor: [ { uri: `urn:vte.cx:auth:${email}` } ],
+    title: '【魂寅】パスワード変更',
+    summary: 'パスワードを変更します。下記リンクをクリックして魂寅のパスワード変更を完了してください。${URL}?${PASSRESET_TOKEN}'
+    // メールエントリ /_settings/passreset で代替
+  }
+]
+// PUT /d?_passreset&g-recaptcha-token=${captcha} data
+```
+メール記載URLのリンク先で↓リクエスト
+```ts
+ const data = [
+   {
+     contributor: [
+       {uri: 'urn:vte.cx:auth:,{パスワード}'},
+       {uri: 'urn:vte.cx:oldphash:{旧パスワード}'} // または {uri: 'urn:vte.cx:passreset_token:{パスワード変更一時トークン}'}
+     ],
 
+   }
+ ]
+ // PUT /d?_changephash data
+ ```
+### 管理者によるパスワードリセット
+```ts
+const data = [
+  {
+    contributor: [ {uri: 'urn:vte.cx:auth:,{パスワード}'} ],
+    link: [ { ___rel: 'self', ___href: '/_user/{UID}_auth' }]
+  }
+]
+// PUT /d?_changephashByAdmin
+```
+`vtecxapi.changepassByAdmin(data)`も同じ
+ユーザ管理グループのみ実行可
 ### ユーザー初期フォルダ
 ユーザー初ログイン ↓が生成される
 /user/{UID}
@@ -90,15 +123,26 @@ const data = [
 ```
 
 ### アカウント変更
-PUT /d?_changeaccount アカウント変更のためのメール送信 ログインユーザ自身のみ実行可
-リクエストデータにメールエントリがなければ /_settings/changeaccountエントリを使われる
+ログインユーザー自身
+PUT /d?_changeaccount アカウント変更のためのメール送信 リクエストデータにメールエントリがなければ/_settings/changeaccountエントリのメール設定が使われる
+```ts
+const data = [{
+  contributor: [{ uri: 'urn:vte.cx:auth:{メールアドレス}' }],
+  title: 'メールタイトル(任意)',
+  summary: 'メール本文(任意)'
+}]
+```
 メール本文に認証コードつきURL変換文字列'${VERIFY}'を挿入
-URL踏むと、PUT /d?_changeaccount_verify={認証コード} アカウント変更を実行
+リンクから、PUT /d?_changeaccount_verify={認証コード} アカウント変更を実行
+メールアドレスをユーザアカウントに変換したものが全ユーザーエントリのtitle項目(ユーザーアカウント)に見つかればエラー
+リクエストデータにメールエントリがなければ エントリを使われる
 
-サービス作成者のアカウント変更を行う場合、作成したサービスとシステム管理サービスでアカウント変更する
+サービス作成者のアカウント変更は作成したサービスとシステム管理サービスでアカウント変更する
+PUT /d?_changeaccount_verify={認証コード}&_RXID={RXID}
+ログインユーザー自身
 
 ### アカウント削除
-DELETE /d?_deleteuser={アカウント|uid} (1ユーザー)
+DELETE /d?_deleteuser={アカウント} (1ユーザー)
 DELETE /d?_deleteuser リクエストデータ↓ (複数ユーザー)
 ```ts
 const data = [{
@@ -130,10 +174,56 @@ const data = [{
 グループ作成者がPUT /d/{上のエントリのselfのkey}?_signature
 グループ参加者がPUT /d/{上のエントリのalternateのkey}?_signature
 ユーザーがグループに追加される
+
+### それ以外のグループ
+グループ作成
+サービスのリソース上にシステムフォルダ以外の任意のフォルダを用意し、これをグループとする
+(1) 作成者(UID:123)が権限(CRUD)を持つ、
+(2) グループ自体(/groupS/group_123)が権限(CRUD)を持つ、
+(3) グループ(/groupS/group_123)を作成する
+const group_creation_entry = {
+  contributor: [
+    { uri: 'urn:vte.cx:acl:123,CRUD' }, /*(1)*/
+    { uri: 'urn:vte.cx:acl:/groupS/group_123,CRUD' } /*(2)*/
+  ],
+  link: [
+    { ___rel: 'self', ___href: '/groupS/group_123' } /*(3)*/
+  ]
+}
+
+グループに対して (1)参加するユーザを配下に登録 (2)それのエイリアスを登録
+const owner_participation_entry = {
+  link: [
+    { ___rel: 'self', ___href: '/groupS/group_123/123'}, /*(1)*/
+    { ___rel: 'alternate', ___href: '/_user/123/group/group_123'} /*(2)*/
+  ]
+}
+const guest_participation_entry = {
+  link: [
+    { ___rel: 'self', ___href: '/groupS/group_123/456'},
+    { ___rel: 'alternate', ___href: '/_user/456/group/group_123'}
+  ]
+}
+
+グループ作成者が下をPOSTする。 グループは作成され、グループ作成者はこれに所属します
+const feed = [ group_creation_entry, owner_participation_entry ]
+
+グループ招待/参加申請　を送る
+UID:456のユーザを招待します
+グループに対して権限を持つユーザ(作成者など)が[グループ作成の手順2]をユーザに対して実行します
+下をPOST
+const feed = [ guest_participation_entry ]
+
+招待を送る親ユーザ/参加申請を送る子ユーザが　PUT: /groupS/group_123/456?_signature
+PUT: {guest_paritcipation_entry の self のURL}?_signature　の形式
+受ける親/子ユーザが　PUT: /_user/456/group/group_123?_signature
+PUT: {guest_participation_entry の alternate のURL}?_signature　の形式
+手順2と3の後、URLのselfとalternateの対応が確認されると、ユーザーはグループに参加させられる
+
 ### フォルダACL
 フォルダ(エントリ)のcontributor項目
 <contributor>
-    <uri>urn:vte.cx:acl:{UID(先頭と末尾にワイルドカード(*)指定可)|*(全ユーザ)|+(ログインユーザ)|グループKEY(ワイルドカード {途中までのKEY}*)複数指定可},{C|R|U|D|E|.|/複数指定可}</uri>
+    <uri>urn:vte.cx:acl:{UID(先頭と末尾にワイルドカード(*)指定可)|*(全ユーザ)|+(ログインユーザ)|グループKEY(ワイルドカード {途中までのKEY}*)複数指定可},{C|R|U|D|E|.|/(複数指定可)}</uri>
 </contributor>
 E./　単体指定不可
 (C)reate (R)ead (U)pdate (D)elete (E)xecutable file(サーバサイドスクリプトだけ実行可能)

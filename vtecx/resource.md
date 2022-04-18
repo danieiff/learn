@@ -108,7 +108,7 @@ http://{サービス名}.vte.cx/d/foo?f&x ←'x'で、リクエストデータ�
 ↓リクエスト 同じ条件パラメータを指定
 _pagination=[{ページ範囲開始},] {ページ範囲} カーソル一覧を作成 開始のデフォルトは1
 n={ページ数} カーソル外ページを指定すると400: Please make a pagination index in advance
-### 検索
+### Feed検索
 検索indexをできるだけ使う
 #### 検索条件指定文字列
 {エントリ項目名(階層は.で繋ぐ)}-{検索条件指定文字列}-{encodeURIComponent(値)}
@@ -117,7 +117,7 @@ lt <
 le <=
 gt >
 ge >=
-ne !=
+ne !  =
 rg 正規表現 (あいまい検索 *{値}.*)
 fm 先頭が値に一致
 bm 末尾が値に一致
@@ -149,9 +149,9 @@ OR検索の場合 デフォルトでOR検索条件ごとにソート
 OR検索内のソート項目は、OR検索内の第一条件がインデックス指定であればインデックス項目の昇順
 インデックス項目でない場合 keyの昇順
 
-## PUT
+## PUT (vtecxapi.putにも適用)
 ペイロード(リクエストのBody): raw形式100MiBまで　それ以上はBlob
-登録先i エントリのKEY link rel=selfタグのhref属性の値 親階層がないとエラー
+登録先 エントリのKEY link rel=selfタグのhref属性の値 親階層がないとエラー
 同時登録更新 最大1000エントリ
 成功 HTTPステータスが200(登録時は201)
 
@@ -182,6 +182,7 @@ const handleAlias = (key_self: string, key_alias: string) => {
   // PUT /d?_removealias data
 }
 ```
+id項目を削除用にして PUT [{link: [{ ___rel: 'self', ___href: '{ALIAS}' }] でもエイリアス削除
 
 ### 大量更新
 1000件以上の更新
@@ -197,7 +198,7 @@ DELETE /d/{KEY} KEY配下にエントリがあるとエラー'Can't delete for t
 DELETE /d/{KEY}?_rf 配下のエントリを含めて削除
 DELETE /d/{KEY}?r={REVISION} 楽観的排他チェック
 
-###
+### CLIからエントリをPUT
 以下のようなJSONデータを/dataフォルダ上に作成し、npm run upload:dataを実行してください。キーであるlink.___hrefが/foo/2になっていますので、/d/foo/2に登録される (親フォルダがある前提)
 sample2.json
 [{
@@ -238,7 +239,7 @@ rangeids(url: string, range: string): void	uriの採番カウンタに範囲を�
 /_user： ユーザエントリ
 /_html： HTML、CSSやJavaScript、画像など Webサーバにより{http~.vte.cx}/にマッピングされる
 /_settings：  リポジトリ/setup/_settings配下のxmlファイルと対応 これを編集(注意 余計な改行を入れない), npm run upload, download サービス管理画面から設定できる
-  /properties： 各種プロパティ　システムがデフォルト値を保持しています。
+  /properties： 各種プロパティ　システムがデフォルト値を保持しています。 (/properties.xmlとは別)
   /template： エントリスキーマやIndex、項目ACLなど
   /bigquery.json： BigQuery用サービスアカウント秘密鍵ファイル
   /adduser： ユーザ登録時(?_adduser)に送られるメール本文

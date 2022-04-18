@@ -1,10 +1,12 @@
 ## 基本概念
 エントリ XML JSON
-リソース フォルダとエンドポイント フィード エントリ,(javascript上でのリクエスト)の関係
-KEY id link href rel
+リソース フォルダ エンドポイント フィード エントリ,(javascript上でのリクエスト)の関係
+サービス ローカル リモートリポジトリ(GitHub)　の関係
+URL(ブラウザ上、サーバーサイドスクリプト、サービス(apサーバー)上) KEY id link href rel
 アカウント
-トランザクション
+トランザクション BDB ←→ データストア BigQuery
 リクエスト、レスポンスのデータの形式の制限 スキーマかATOMの任意項目
+リポジトリのsetup/_settings/properties.xml と サービスの/_settings/propertiesフォルダ(エントリ)の違い
 ## 環境構築
 ### プロジェクトリポジトリ
 npm install create-vtecx-app
