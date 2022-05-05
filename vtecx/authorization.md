@@ -23,7 +23,7 @@ _rxid.counter.{連番}.{回数}={同じRXIDを{回数分}使用できる対象UR
 
 スマホログイン認証
 npm install vtecxauth
-vtecxauth.getRXID(ユーザーアカウント, パスワード、 サービス名, APIキー(管理画面で確認))
+rxid = vtecxauth.getRXID(ユーザーアカウント, パスワード、 サービス名, APIキー(管理画面で確認))
 ↓cookieの代わりにアクセストークンを使用 タイムアウトなし, ログインなし,(→ セッションなし)
 
 ```ts
