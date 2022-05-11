@@ -103,10 +103,8 @@ self.addEventListener('push', function (event) {
 
 ### ADV
 cd /Users/xxx/Library/Android/sdk/emulator
- 端末一覧を表示
 ./emulator -list-avds
- ↓Pixel_2_API_30の部分は端末一覧の中から的かつ変えてください
-./emulator -avd Pixel_2_API_30 -dns-server 8.8.8.8
+./emulator -avd Nexus_5X_API_30 -dns-server 8.8.8.8
 
 /Users/hirohisa/Library/Android/sdk/emulator -list-avds
 

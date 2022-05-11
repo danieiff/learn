@@ -32,7 +32,7 @@ sendError(status_code: number, message?: string): void	(HTTPプロトコル)
 sendMessage(status_code: number, message: string): void	(JSON)
 
 #### セッション
-/_settings/properties で`_session.minute=30` : [30]分セッション有効
+/_settings/properties で`_session.minute=30` : [デフォルト30]分セッション有効
 setSessionFeed(name: string, feed: any): void	feedをセッションに登録する
 setSessionEntry(name: string, entry: any): void	entryをセッションに登録する
 setSessionString(name: string, str: string): void	文字列をセッションに登録する
