@@ -1,3 +1,36 @@
+# Expo
+Node.js(LTS) Watchman (for mac, linux) Git
+npm install --global expo-cli
+
+expoログイン expo register, expo login, expo whoami
+
+expo init my-app, cd my-app
+
+expo start, Expo Dev Tools, 実機からQRコード読み込んでアプリを動かせる, Emulator:[i]Phone [a]ndroid [w]eb browser
+
+Expo CLIから
+- development mode
+hot reload
+パフォーマンスが落ちる
+- production mode
+パフォーマンスが最適化
+
+developer menu: 実機ならフリック エミュレーターなら(iOS)cmd+d (android)ctrl+m
+
+## デプロイ
+```json:app.json
+{
+  "expo": {
+    "ios":{ "bundleIdentifier": "同一の値のビルド→Appstore提出で、自動アップデート" },
+    "android":{"package":"同一の値のビルド→Google Play Store提出で、自動アップデート"}
+  }
+}
+```
+expo build:ios
+expo upload:ios | Transporterアプリ
+
+expo build:android --type app-bundle --release-channel android
+初回Google Play Console (Webインターフェース) | expo upload:android
 # FCM
 形式
 {"from":"Firebaseプロジェクト番号","priority":"normal","notification":{"title":"タイトル","body":"メッセージ","image":"画像URL"}}
@@ -111,3 +144,11 @@ cd /Users/xxx/Library/Android/sdk/emulator
 cd sdk/platform--tools
 adb devices
 expo start --localhost --android (expo ルートディレクトリで)
+
+## ストアダウンロードリンク
+https://play.google.com/intl/us-en/badges/
+https://tools.applemediaservices.com
+
+### デザイン
+タッチ領域最小 44px
+フォントサイズ 4の倍数px

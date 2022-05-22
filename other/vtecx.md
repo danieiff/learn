@@ -119,8 +119,3 @@ indexedDB 型情報保存可https://developers.google.com/web/ilt/pwa/working-wi
 webアプリをオフラインで動かす IndexedDBとCache API https://developers.google.com/web/fundamentals/instant-and-offline/web-storage/cache-api
 
 特異なUnicode https://github.com/Codepoints/awesome-codepoints
-
-# スマホアプリ
-## ダウンロードリンク
-https://play.google.com/intl/us-en/badges/
-https://tools.applemediaservices.com

@@ -52,7 +52,7 @@ Closer Objects are more distinct / fuzzier
 ### Text
 12~16+px: secondary text 14px, paragraph text 16px
 Make numbers big and bold, with a smaller, lighter uppercase label
-Color Contrast Ratio (See AA Guidelines)
+Color Contrast Ratio (See AA Guidelines) |X pure black (#000) O gray #888|
 50-75characters in a line
 Spacing between paragraphs, lines
 
