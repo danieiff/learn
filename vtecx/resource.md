@@ -249,6 +249,7 @@ rangeids(url: string, range: string): void	uriの採番カウンタに範囲を�
   /adduser： ユーザ登録時(?_adduser)に送られるメール本文
   /passreset： パスワードリセット時(?_passreset)に送られるメール本文
 /_log：ログが降順(最新が先頭） `updated` : 更新日時、`title` : タイトル、`subtitle` : サブタイトル、`summary` : 内容
+/_login_history : アカウントの認証(ログイン、新規登録等)履歴
 /_security： 認証の失敗回数 DoS攻撃対策のIP Blacklistに使われる
 
 #### アクセス時エラー発生でリダイレクトする

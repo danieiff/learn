@@ -42,3 +42,7 @@ npm install per-env --save
 ### debug
 npm install debug
 https://www.npmjs.com/package/debug
+
+### unicode
+password
+/^(?=.*?[0-9])(?=.*?[a-zA-Z])(?=.*?[!-/@_])[A-Za-z!-9@_]{8,}$/

@@ -34,3 +34,10 @@ repo
 
 head
 base
+
+## editor
+vscode
+sftp
+
+## ssh
+ssh config利用する
