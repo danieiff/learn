@@ -15,7 +15,7 @@ hot reload
 - production mode
 パフォーマンスが最適化
 
-developer menu: 実機ならフリック エミュレーターなら(iOS)cmd+d (android)ctrl+m
+developer menu: 実機ならフリック エミュレーターなら(iOS)cmd+ctrl+z (android)ctrl+m
 
 ## デプロイ
 ```json:app.json

@@ -79,3 +79,6 @@ Inverse colors
 ### Form
 Avoid dropdown asap
 Input text 16px at least
+
+### margin
+8・12・16・24・32 px  :余白...4の倍数

@@ -45,4 +45,51 @@ https://www.npmjs.com/package/debug
 
 ### unicode
 password
-/^(?=.*?[0-9])(?=.*?[a-zA-Z])(?=.*?[!-/@_])[A-Za-z!-9@_]{8,}$/
+/^(?=.*?[0-9])(?=.*?[a-zA-Z])(?=.*?[!-/@_])[A-Za-z!-9@_]{10,}$/
+email
+/^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+
+
+### npm
+@hookform/resolvers
+@rooks/use-outside-click-ref
+@rooks/use-window-size
+algoliasearch
+axios
+camelcase-keys
+firebase
+firebaseui-ja
+next
+next-seo
+nextjs-basic-auth-middleware
+no-scroll
+nookies
+rc-pagination
+react
+react-dom
+react-firebaseui
+react-google-recaptcha
+react-hook-form
+react-icons
+react-no-ssr
+react-portal-overlay
+react-spinners
+react-table
+react-toastify
+react-use-measure
+ress
+sass
+sass-mq
+yup
+yup-phone
+
+
+### cheat sheet
+```ts
+const arr = [1,2,3];
+[arr[2], arr[1]] = [arr[1], arr[2]];
+console.log(arr); // [1,3,2]
+
+const getItem = ({ item } = {}) => item
+getItem(null) // destructuring null values will throw an error.
+```

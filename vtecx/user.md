@@ -6,7 +6,7 @@
 uid システムによる自動連番のユーザー識別番号
 
 ユーザ(エントリ) /_user/{uid}
-contributor.email メールアドレス
+contributor.email メールアドレス →検索 `/_user?contributor.email-eq-${email}`
 summary ユーザの状態(ステータス)
   登録なし: Nothing
   仮登録：Interim 登録画面から仮登録しユーザに確認メールが送られる
@@ -160,7 +160,7 @@ const data = [{
 <content>タグのテキストノードの内容を更新
 
 ### ユーザー作成グループ
-グループ署名しない場合どうなる(権限など) グループが/_user/{uid}配下にない時はあるのか
+グループが/_user/{uid}配下にない時はあるのか
 {uidユーザ}作成グループ /_user/{uid}/{グループ名}
 {uidユーザ}が参加グループ(他ユーザーが作成) /_user/{uid}/group/{グループ名}
 ```ts
@@ -248,7 +248,7 @@ const data = [{
 エントリのlink項目のKEY(selfかalias)に署名をつけることでユーザが承認したことを記録
 <link rel="{self | alternate}" href="{KEY}" title="{REVISION},{uid},{署名}" /> `{ link: [{ ___rel:'{self|alternate}', ___href: '{KEY}', ___title: '{REVISION},{uid},{署名}' }] }`
 
-ユーザーが、Update(PUTリクエスト)権限を有する/_user/{ログインしている自uid}/{KEYの残り部分} に対して PUT {KEY}?_signature&_revision={REVIISION(任意項目)}
+ユーザーが、Update(PUTリクエスト)権限を有する/_user/{ログインしている自uid}/{KEYの残り部分} に対して PUT {KEY}?_signature&_revision={REVISION(任意項目)}
 成功200 A signature has been applied. ログインしていない場合401 KEYに署名する権限がない場合403
 既に署名が付いている場合はREVISIONを+1し、updated項目を更新
 
