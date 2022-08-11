@@ -12,7 +12,7 @@ For multiple platforms, mobile and web
 Graphql, Firebase (due to a clientside query)
 
 Graphql and Database is complex, and this stack is for a bigger team in a company. This means that your responsibility is minimum over there.
-So, you should choose firebase and focus on Frontend programming for application logics and rich features. It will reduce your stress and make coding in a work, more comfortable. with minimal backend written with Typescript.
+So, you should choose firebase and focus on Frontend programming for application logics and rich features. It will reduce your stress and make coding in a work, more comfortable. with a minimum backend written with Typescript.
 
 A Human resource is the highest bottleneck.
 In a company,

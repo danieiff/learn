@@ -18,6 +18,10 @@ hot reload
 developer menu: 実機ならフリック エミュレーターなら(iOS)cmd+ctrl+z (android)ctrl+m
 
 ## デプロイ
+キャッシュ削除
+rm -rf node_modules && yarn cache clean && yarn && expo r -c
+
+
 ```json:app.json
 {
   "expo": {
@@ -323,3 +327,17 @@ Google Play Console を開きます。
 使用するコード言語の API クライアント ライブラリをインストールします。
 OAuth2 のサーバー間認証を使用し、OAuth2 スコープ（https://www.googleapis.com/auth/devstorage.read_only）への権限を要求するための API 呼び出しを実行するコードを設定します。
 認証された API 呼び出しを実行して、レポートを取得します。
+
+## React Native, React Native for Web, Expo
+
+### Layout
+3 layers with flexbox
+flex: 1
+flexDirection: column|row
+flexGrow: 0.8
+
+use height, width only for image sizes
+
+### Library
+React Navigation
+React Native Paper
