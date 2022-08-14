@@ -42,6 +42,16 @@ Don't nest component definitions.  Because everytime the parent component render
 
 Only the number 0 left side of && operator will be rendered
 
+### Props
+```tsx
+import { Button } from "library"; // but doesn't export ButtonProps! oh no!
+type ButtonProps = React.ComponentProps<typeof Button>; // no problem! grab your own!
+type AlertButtonProps = Omit<ButtonProps, "onClick">; // modify
+const AlertButton = (props: AlertButtonProps) => (
+  <Button onClick={() => alert("hello")} {...props} />
+);
+```
+
 ### Effects
 useEffect runs twice in a development, but once in a production.
 Assure it runs once per app load code below
@@ -88,6 +98,57 @@ import { flushSync } from 'react-dom'
 useImperativeHandle
 useDefferedValue ...useDebounce useThrottle ... put returned value to deps of useMemo
 const [isPending, startTransition] = useTransition()
+
+### Ref
+```tsx
+import { forwardRef, ReactNode, Ref } from "react";
+
+interface Props {
+  children?: ReactNode;
+  type: "submit" | "button";
+}
+
+export const FancyButton = forwardRef(
+  (
+    props: Props,
+    ref: Ref<HTMLButtonElement> // prevent mutate and reassign the ref
+  ) => (
+    <button ref={ref} className="MyClassName" type={props.type}>
+      {props.children}
+    </button>
+  )
+);
+```
+
+### Portal
+
+```tsx
+import { useEffect, useRef, ReactNode } from "react";
+import { createPortal } from "react-dom";
+
+const modalRoot = document.querySelector("#modal-root") as HTMLElement;
+
+interface ModalProps {
+  children?: ReactNode;
+}
+
+const Modal = ({ children }: ModalProps) => {
+  const el = useRef(document.createElement("div"));
+
+  useEffect(() => {
+    // Use this in case CRA throws an error about react-hooks/exhaustive-deps
+    const current = el.current;
+
+    // We assume `modalRoot` exists with '!'
+    modalRoot!.appendChild(current);
+    return () => void modalRoot!.removeChild(current);
+  }, []);
+
+  return createPortal(children, el.current);
+};
+
+export default Modal;
+```
 
 ### テスト
 テストランナーには Jest を使おう
