@@ -183,3 +183,48 @@ const useStyles = makeStyles(_theme => ({
 }))
 const classes = useStyles({isWidthLessThan600: boolean })
 ```
+
+# React Native
+## React Navigation v6
+### Exposed Header as Component
+for customization, convenience
+### Native Navigation by default
+- Performance, native ui experience
+@react-navigation/native-stack for Stack navigation
+@react-navigation/material-top-tabs for `react-native-pager-view`
+### type definition for `useNavigation`
+```ts
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList {
+      Home: undefined;
+      Profile: { userId: string };
+      NotFound: undefined;
+    }
+  }
+}
+```
+---
+Web
+---
+### URL Linking with query params
+```tsx
+//
+<SomeScreen name={'invoices'} ... />
+//
+const navigationProps = useLinkProps({
+    to: {
+      screen: 'invoices',
+      params: { reference: someValue },
+    },
+  })
+  //
+  const linking = {
+    prefixes: ['//my-prefix'],
+    config: {
+      screens: {
+        ['invoices']: 'invoices/:reference'
+      }
+    },
+  }
+```
