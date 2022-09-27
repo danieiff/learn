@@ -6,7 +6,13 @@ expoログイン expo register, expo login, expo whoami
 
 expo init my-app, cd my-app
 
-expo start, Expo Dev Tools, 実機からQRコード読み込んでアプリを動かせる, Emulator:[i]Phone [a]ndroid [w]eb browser
+Terminal UI: `M` to open the menu on connected iOS and Android
+iOS Device: Shake the device a little bit.
+iOS Simulator: `Ctrl + Cmd ⌘ + Z` `Cmd ⌘ + D`
+Android Device: Shake the device vertically a little bit.
+Android Emulator: `Cmd ⌘ + M`  `Ctrl + M` run shell cmd `adb shell input keyevent 82`
+
+production mode( optimized performance, bugs only for prod,  __DEV__ env var to false ): npx expo start --no-dev --minify
 
 Expo CLIから
 - development mode
@@ -55,6 +61,26 @@ module.exports = {
   ]
 }
 ```
+
+## production build for test
+`npx expo start --no-dev --minify`
+
+If you have expo-dev-client installed in your project, you will need to build the "Release" configuration/variant (--configuration Release for iOS and --variant release for Android).
+`npx expo run:ios —-device`
+app signing
+developer profiles setup
+https://expo.fyi/setup-xcode-signing
+### debug
+- ios
+lldb
+`xed ios`
+
+`npx expo run:android`
+`open -a /Applications/Android Studio.app android/`
+
+## Show system logs for an iOS device
+`npx react-native log-android`
+`npx react-native log-ios`
 
 ## Google Firebase Console と プッシュ通知
 ### クライアント
