@@ -78,6 +78,21 @@ lldb
 `npx expo run:android`
 `open -a /Applications/Android Studio.app android/`
 
+## React Native Debugger
+### Test Slow Network
+Go to the Network tab of your React Native debugger
+Click on the "No throttling" dropdown
+Choose among presets such as 2G or 3G, or create your own preset
+Set the download speed, the upload speed and the network latency
+
+- On Real iOS device
+Download XCode on your Mac.
+Connect your iPhone to XCode.
+Access the Developer settings on your device from the Settings menu
+Network Link Conditioner > Select different kinds of connection (Edge, 3G, LTE/4G, Very Bad Network)
+- Android
+Go to Parameters > Wi-Fi and Internet > Mobile network > Preferred network type > 4G, 3G or only 2G. (Needs a SIM card)
+
 ## Show system logs for an iOS device
 `npx react-native log-android`
 `npx react-native log-ios`
