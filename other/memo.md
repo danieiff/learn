@@ -55,3 +55,7 @@ alpha = /^\p{Alpha}+$/u  // 国語（で使われるような記号でない普�
 
 - 正規化
 String.prototype.normalize()
+
+### Chrome 
+chrome://flags/#calculate-native-win-occlusion
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"--disable-backgrounding-occluded-windows
