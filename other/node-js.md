@@ -93,3 +93,19 @@ console.log(arr); // [1,3,2]
 const getItem = ({ item } = {}) => item
 getItem(null) // destructuring null values will throw an error.
 ```
+
+### Support all cases requires/import
+
+```ts
+class FastifyInstance {}
+function fastify() {
+  return new FastifyInstance();
+}
+fastify.FastifyInstance = FastifyInstance;
+// Allows for { fastify }
+fastify.fastify = fastify;
+// Allows for strict ES Module support
+fastify.default = fastify;
+// Sets the default export
+module.exports = fastify;
+```
