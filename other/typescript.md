@@ -25,6 +25,26 @@ const id: ID = userid('a7')
 <script>
 - type NonNullable<T> = T extends null | undefined ? never : T;
 + type NonNullable<T> = T & {};
+
+
+interface Triangle {
+  kind: "triangle";
+  sideLength: number;
+}
+type Shape = Circle | Square | Triangle;
+function getArea(shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.sideLength ** 2;
+    default:
+      const _exhaustiveCheck: never = shape;
+Type 'Triangle' is not assignable to type 'never'.
+// assignable: never -> every type, (cannot assign <- way)
+      return _exhaustiveCheck;
+  }
+}
 </script>
 
 ### Declaration Files
@@ -133,8 +153,19 @@ declare function getArrayLength(arr: any[]): number;
 declare namespace getArrayLength {
   declare const maxInterval: 12;
 }
-export = getArrayLength;
+
 </script>
+
+Folder structure of d.ts files in `@types/myLib`: mirror the layout of the library
+Test types
+- Create a new folder in node_modules/@types/[libname]
+- Create an index.d.ts in that folder, and copy the example in
+- See where your usage of the module breaks, and start to fill out the index.d.ts
+- Clone DefinitelyTyped/DefinitelyTyped and follow the instructions in the README.
+or
+- Create a new file in the root of your source tree: [libname].d.ts
+- Add declare module "[libname]" { }
+- Add the template inside the braces of the declare module, and see where your usage breaks
 
 ### DOM
 <div>
