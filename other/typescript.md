@@ -20,6 +20,11 @@ function userid(id: string): UserID {
 }
 
 const id: ID = userid('a7')
+
+type ToArrayNonDist<Type> = [Type] extends [any] ? Type[] : never;
+ 
+type StrArrOrNumArr = ToArrayNonDist<string | number>; // -> (string|number)[]
+// With `Type extends any`, -> string[] | number[]
 ```
 
 <script>
