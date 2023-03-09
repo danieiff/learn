@@ -1,31 +1,261 @@
 <!DOCTYPE html>
 <!-- {種類}はwebsite|article -->
 <head prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# {種類 }: https://ogp.me/ns/{種類}#">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+  リソースがどこからロードされるかを制御できます。
+  このタグはその後に宣言されたリソースのみに適用されるため、<head>内の可能な限り上に記述します。
+-->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+ 
+<!-- Webアプリケーションの名称（Webサイトをアプリとして利用する場合のみ記述する） -->
+<meta name="application-name" content="Application Name">
+ 
+<!-- Chrome、Firefox OS、Opera用のテーマカラー -->
+<meta name="theme-color" content="#4285f4">
 <title>{google検索結果 タイトル (< 32字)}</title>
 <!-- PC：120文字 スマホ：50文字 -->
 <meta name="description" content="（google検索結果 ページ説明)">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="（正しいページURL）">
 <!--
   公開: index,followを指定。もしくは指定なし
   非公開: (低品質,検索結果) noindex,nofollow (タグ/日付別ページ,トップ/カテゴリーページの1ページ以外) noindex,follow
 -->
 <meta name="robots" content="index,follow">
+<meta name="googlebot" content="index,follow">
+
+  <!-- サイトリンクの検索ボックスを表示しないようにGoogleに指示 -->
+<meta name="google" content="nositelinkssearchbox">
+ 
+<!-- このドキュメントの翻訳を提供しないようGoogleに指示 -->
+<meta name="google" content="notranslate">
+ 
+<!-- Webサイトの所有権を証明 -->
+<meta name="google-site-verification" content="verification_token"><!-- Google サーチコンソール -->
+<meta name="yandex-verification" content="verification_token"><!-- Yandex Webマスター -->
+<meta name="msvalidate.01" content="verification_token"><!-- Bing Webマスターセンター -->
+<meta name="alexaVerifyID" content="verification_token"><!-- Alexa コンソール -->
+<meta name="p:domain_verify" content="code_from_pinterest"><!-- Pinterest コンソール-->
+<meta name="norton-safeweb-site-verification" content="norton_code"><!-- ノートン セーフウェブ -->
+ 
+<!-- ドキュメントの作成に使用したソフトウェアを記述 (WordPress、Dreamweaver など) -->
+<meta name="generator" content="program">
+ 
+<!-- ドキュメントの主題を簡単に説明 -->
+<meta name="subject" content="your document's subject">
+ 
+<!-- ドキュメントの内容に基づいて、一般的な年齢区分を設定 -->
+<meta name="rating" content="General">
+ 
+<!-- リファラー情報の受け渡し方法を制御 -->
+<meta name="referrer" content="no-referrer">
+ 
+<!-- 連続した数字があると誤認識してしまうので、電話番号の自動リンク機能は停止 -->
+<meta name="format-detection" content="telephone=no">
+ 
+<!-- 「off」に設定して、DNSプリフェッチを完全にオプトアウト -->
+<meta http-equiv="x-dns-prefetch-control" content="off">
+ 
+<!-- 特定のフレームに表示するドキュメントを設定 -->
+<meta http-equiv="Window-Target" content="_value">
+ 
+<!-- ジオタグ -->
+<meta name="ICBM" content="latitude, longitude">
+<meta name="geo.position" content="latitude;longitude">
+<meta name="geo.region" content="country[-state]"><!-- 国コード (ISO 3166-1): mandatory, 州コード (ISO 3166-2): optional; 例: content="US" / content="US-NY" -->
+<meta name="geo.placename" content="city/town"><!-- 例: content="New York City" -->
+ 
+<!-- Web収益化 https://webmonetization.org/docs/getting-started -->
+<meta name="monetization" content="$paymentpointer.example">
+
+  <link rel="stylesheet" href="https://example.com/styles.css">
+ 
+<!-- コンテンツの重複を防ぐ -->
+<link rel="canonical" href="https://example.com/article/?page=2">
+ 
+<!-- 現在のドキュメントのAMP HTMLバージョンへのリンク -->
+<link rel="amphtml" href="https://example.com/path/to/amp-version.html">
+ 
+<!-- JSONファイルへのリンク -->
+<link rel="manifest" href="manifest.json">
+ 
+<!-- ドキュメントの著者情報へのリンク -->
+<link rel="author" href="humans.txt">
+ 
+<!-- リンクのコンテキストに適用される著作権へのリンク -->
+<link rel="license" href="copyright.html">
+ 
+<!-- 別の言語である可能性があるドキュメント内の場所へのリンク -->
+<link rel="alternate" href="https://es.example.com/" hreflang="es">
+ 
+<!-- 著者や関係者に関する情報 -->
+<link rel="me" href="https://google.com/profiles/thenextweb" type="text/html">
+<link rel="me" href="mailto:name@example.com">
+<link rel="me" href="sms:+15035550125">
+ 
+<!-- 記録、文書、歴史的関心のある文書へのリンク -->
+<link rel="archives" href="https://example.com/archives/">
+ 
+<!-- 階層構造のトップレベルリソースへのリンク -->
+<link rel="index" href="https://example.com/article/">
+ 
+<!-- 自身を参照 - ドキュメントに複数の参照がある場合に便利 -->
+<link rel="self" type="application/atom+xml" href="https://example.com/atom.xml">
+ 
+<!-- 一連のドキュメント内の最初のドキュメント、次のドキュメント、前のドキュメント、最後のドキュメント -->
+<link rel="first" href="https://example.com/article/">
+<link rel="last" href="https://example.com/article/?page=42">
+<link rel="prev" href="https://example.com/article/?page=1">
+<link rel="next" href="https://example.com/article/?page=3">
+ 
+<!-- ブログを維持するために第三者サービスを使用する場合に使用 -->
+<link rel="EditURI" href="https://example.com/xmlrpc.php?rsd" type="application/rsd+xml" title="RSD">
+ 
+<!-- 別のWordPressブログがあなたのWordPressブログや投稿にリンクしたときに自動コメントを作成 -->
+<link rel="pingback" href="https://example.com/xmlrpc.php">
+ 
+<!-- サイトにリンクしたときにURLに通知 -->
+<link rel="webmention" href="https://example.com/webmention">
+ 
+<!-- Micropubクライアントを使用して独自のドメインに投稿できるようにします -->
+<link rel="micropub" href="https://example.com/micropub">
+ 
+<!-- Open Search -->
+<link rel="search" href="/open-search.xml" type="application/opensearchdescription+xml" title="Search Title">
+ 
+<!-- Feeds -->
+<link rel="alternate" href="https://feeds.feedburner.com/example" type="application/rss+xml" title="RSS">
+<link rel="alternate" href="https://example.com/feed.atom" type="application/atom+xml" title="Atom 0.3">
+ 
+<!-- プリフェッチ、プリロード、プリブラウジング -->
+<link rel="dns-prefetch" href="//example.com/">
+<link rel="preconnect" href="https://www.example.com/">
+<link rel="prefetch" href="https://www.example.com/">
+<link rel="prerender" href="https://example.com/">
+<link rel="preload" href="image.png" as="image">
+
 <!-- favicon, Apple touch icon -->
-<link rel="icon" href="favicon.ico">
-<link rel="apple-touch-icon-precomposed" href="（アップルタッチアイコンの画像URL）">
+<!-- 最高解像度のアイコン -->
+<link rel="icon" sizes="192x192" href="/path/to/icon.png">
+ 
+<!-- Apple Touch アイコン(192pxのicon.pngを再利用) -->
+<link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png">
+ 
+<!-- Safariのピン留めされたタブのアイコン -->
+<link rel="mask-icon" href="/path/to/icon.svg" color="blue">
+
 <!-- OGP -->
-<meta property="og:admins" content="（FBのID）">
-<meta property="og:title" content="（サイトタイトル）">
-<meta property="og:type" content="（ページの種類）"> <!-- TOPページ等は「website」 、それ以外は「article」でOK-->
-<meta property="og:description" content="（ページの説明）">
-<meta property="og:url" content="（ページのURL）">
-<meta property="og:image" content="（ogp画像のURL）">
-<meta property="og:locale" content="ja_JP">
-<meta property="og:site_name" content="（サイトタイトル）">
-<meta name="twitter:card" content="（カード種類）">
-<meta name="twitter:site" content="（@Twitterユーザー名）">
-<meta charset="utf-8">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@site_account">
+<meta name="twitter:creator" content="@individual_account">
+<meta name="twitter:url" content="https://example.com/page.html">
+<meta name="twitter:title" content="Content Title">
+<meta name="twitter:description" content="Content description less than 200 characters">
+<meta name="twitter:image" content="https://example.com/image.jpg">
+<meta name="twitter:image:alt" content="A text description of the image conveying the essential nature of an image to users who are visually impaired. Maximum 420 characters.">
+<!-- Twitterがパーソナライゼーションの目的でサイトの情報を使用することを禁止します -->
+<meta name="twitter:dnt" content="on">
+
+<!-- Facebook -->
+<meta property="fb:app_id" content="123456789">
+<meta property="og:url" content="https://example.com/page.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Content Title">
+<meta property="og:image" content="https://example.com/image.jpg">
+<meta property="og:image:alt" content="A description of what is in the image (not a caption)">
+<meta property="og:description" content="Description Here">
+<meta property="og:site_name" content="Site Name">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="">
+
+<!-- Facebook Instant Article-->
+<meta property="op:markup_version" content="v1.0">
+<!-- 記事のWebバージョンのURL -->
+<link rel="canonical" href="https://example.com/article.html">
+<!-- 記事で使用するスタイル -->
+<meta property="fb:article_style" content="myarticlestyle">
+
+<!-- Schema.org 
+<html lang="" itemscope itemtype="https://schema.org/Article">
+  <head>
+    <link rel="author" href="">
+    <link rel="publisher" href="">
+    <meta itemprop="name" content="Content Title">
+    <meta itemprop="description" content="Content description less than 200 characters">
+    <meta itemprop="image" content="https://example.com/image.jpg">
+-->
+
+<!-- OEmbed -->
+<link rel="alternate" type="application/json+oembed"
+href="https://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=json"
+title="oEmbed Profile: JSON">
+<link rel="alternate" type="text/xml+oembed"
+href="https://example.com/services/oembed?url=http%3A%2F%2Fexample.com%2Ffoo%2F&amp;format=xml"
+title="oEmbed Profile: XML">
+
+<!-- Pinterest -->
+<meta name="pinterest" content="nopin" description="申し訳ありません、PinterestでこのWebサイトから保存することはできません">
+
+<!-- Apple -->
+<!-- スマートアップバナー(Smart App Banner)  -->
+<meta name="apple-itunes-app" content="app-id=APP_ID,affiliate-data=AFFILIATE_ID,app-argument=SOME_TEXT">
+ 
+<!-- 連続した数字があると誤認識してしまうので、電話番号の自動リンク機能は停止 -->
+<meta name="format-detection" content="telephone=no">
+ 
+<!-- タッチアイコン (180x180px以上) -->
+<link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png">
+ 
+<!-- ローンチスクリーン画像 -->
+<link rel="apple-touch-startup-image" href="/path/to/launch.png">
+ 
+<!-- タッチアイコンのタイトル -->
+<meta name="apple-mobile-web-app-title" content="App Title">
+ 
+<!-- スタンドアロン (フルスクリーン) モードを有効にする -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+ 
+<!-- ステータス バーの外観（スタンドアロンモードが有効になっていない限り効果はありません） -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+ 
+<!-- iOSアプリのディープリンク -->
+<meta name="apple-itunes-app" content="app-id=APP-ID, app-argument=http/url-sample.com">
+<link rel="alternate" href="ios-app://APP-ID/http/url-sample.com">
+
+<!-- Google Android -->
+<meta name="theme-color" content="#E64545">
+ 
+<!-- ホームスクリーンに追加 -->
+<meta name="mobile-web-app-capable" content="yes">
+<!-- さらに詳しい情報: https://developer.chrome.com/multidevice/android/installtohomescreen -->
+ 
+<!-- Androidアプリのディープリンク -->
+<meta name="google-play-app" content="app-id=package-name">
+<link rel="alternate" href="android-app://package-name/http/url-sample.com">
+
+<!-- Google Chrome -->
+<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/APP_ID">
+ 
+<!-- Chromeの翻訳プロンプトを停止 -->
+<meta name="google" content="notranslate">
+
+<!-- |App Links -->
+<!-- iOS -->
+<meta property="al:ios:url" content="applinks://docs">
+<meta property="al:ios:app_store_id" content="12345">
+<meta property="al:ios:app_name" content="App Links">
+ 
+<!-- Android -->
+<meta property="al:android:url" content="applinks://docs">
+<meta property="al:android:app_name" content="App Links">
+<meta property="al:android:package" content="org.applinks">
+ 
+<!-- Web fall back -->
+<meta property="al:web:url" content="https://applinks.org/documentation">
+<!-- App Links| -->
+
 <!-- 電話,メールアドレスの自動リンク化を防ぐ -->
 <meta name="format-detection" content="email=no,telephone=no,address=no">
 </head>

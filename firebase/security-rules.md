@@ -1,7 +1,60 @@
-### test
+### test (and dev)
 firebase emulators:start --only firestore(storage, database)
 
-- Report
+#### @firebase/rules-unit-testing
+```ts
+let testEnv = await initializeTestEnvironment({ // params: optional
+  projectId: "demo-project-1234",
+  firestore: {
+    rules: fs.readFileSync("firestore.rules", "utf8"),
+  },
+});
+```
+```ts
+import { setDoc } from "firebase/firestore"; // Assuming a Firestore app and the Firestore emulator for this example
+
+const alice = testEnv.authenticatedContext("alice", { /* (optional) custom claims or overrides for Authentication token payloads */ });
+await assertSucceeds(setDoc(alice.firestore(), '/users/alice'), { ... });
+```
+```ts
+import { getStorage, ref, deleteObject } from "firebase/storage"; // Assuming a Cloud Storage app and the Storage emulator for this example
+
+const alice = testEnv.unauthenticatedContext();
+const desertRef = ref(alice.storage(), 'images/desert.jpg');
+await assertSucceeds(deleteObject(desertRef));
+```
+`RulesTestEnvironment.withSecurityRulesDisabled()`
+Run a test setup function with a context that behaves as if Security Rules were disabled.
+This method takes a callback function, which takes the Security-Rules-bypassing context and returns a promise. The context will be destroyed once the promise resolves / rejects.
+
+`RulesTestEnvironment.cleanup()`
+This method destroys all RulesTestContexts and the underlying resources, allowing a clean exit.
+For test case clean up, run this and emulator-specifc clean data methods
+
+---
+Emulator-specific methods
+- Firestore 
+`RulesTestEnvironment.clearFirestore() => Promise<void>`
+Clears data in the Firestore emulator 
+
+`RulesTestContext.firestore(settings?: Firestore.FirestoreSettings) => Firestore;`
+Gets a Firestore instance for this test context. Available for client SDK APIs of Firestore
+
+- Realtime Database
+`RulesTestEnvironment.clearDatabase() => Promise<void>`
+Clears data
+
+`RulesTestContext.database(databaseURL?: Firestore.FirestoreSettings) => Firestore;`
+Get a Realtime Database instance 
+URL: URL of the Realtime Database instance. If specified, returns an instance for an emulated version of the namespace with parameters extracted from URL.
+
+- Storage
+`RulesTestEnvironment.clearStorage() => Promise<void>`
+
+`RulesTestContext.storage(bucketUrl?: string) => Firebase Storage;`
+URL: "gs://" url to the Firebase Storage Bucket
+
+#### Report
   - browser ui
   (firestore) http://localhost:8080/emulator/v1/projects/<database_name>:ruleCoverage.html 
   (realtime database) http://localhost:9000/.inspect/coverage?ns=<database_name>
@@ -9,10 +62,9 @@ firebase emulators:start --only firestore(storage, database)
   (firestore) http://localhost:8080/emulator/v1/projects/<database_name>:ruleCoverage
   (realtime database) http://localhost:9000/.inspect/coverage.json?ns=<database_name>
 
-- deploy
-firebase deploy --only firestore:rules (firestore, storage, database (without ":rules", rules are included in whole deployment process.))
+- Interact with realtime database instance: http://localhost:9000/path/to/my/data.json?ns=<database_name> (default port 9000) (ref. production: https://<database_name>.firebaseio.com/path/to/my/data.json)
 
-### rules and auth
+#### rules and auth
 - request.auth.token.<field, (custom claims)>
 - [Firestore]
 ```ts
@@ -24,6 +76,9 @@ service cloud.firestore {
   }
 }
 ```
+
+### deploy
+firebase deploy --only firestore:rules (firestore, storage, database (without ":rules", rules are included in whole deployment process.))
 
 ### Admin SDK
 #### deploy
