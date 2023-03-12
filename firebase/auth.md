@@ -104,3 +104,5 @@ Unlink: `unlink(auth.currentUser,  providerData.providerId)`
 ## Admin (TODO all pages)
 authentication -> (service account credentials specific for project, not user) full access to the project resources
 admin control user, disable end-user to perform account actions -> http response error: 'auth/admin-restricted-oeration'
+
+- Customize Email Template: https://support.google.com/firebase/answer/7000714
