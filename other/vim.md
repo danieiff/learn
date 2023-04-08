@@ -120,6 +120,12 @@ c_<Del>       <Del>              カーソル位置の文字を削除
 c_CTRL-W      CTRL-W             カーソルの直前の文字を削除
 c_CTRL-U      CTRL-U             全文字を削除
 
+:tabe | put = execute('messages')
+
+#### Open last closed buffer
+:e #  :h cmdline-special
+<C-o> or :new<CR><C-o><C-o> (for when last closed buf is in the other window) :h jumplist
+
 ### Pattern
 任意の１文字に一致    .       \.
                                   行頭に一致    ^       ^
@@ -311,3 +317,5 @@ g;/, 変更リスト中の [count] 個前/後
 
 ### Term
 -- :call jobstart('nvim -h', {'on_stdout':{j,d,e->append(line('.'),d)}})
+
+
