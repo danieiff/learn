@@ -8,18 +8,19 @@ Use same labels with the different 'id's for repeated landmarks.
 <header> of site-global, not descendant of <aside>, <article>, <main>, <nav>, <section>
 
 ### complementary
+Label required if this exists >1, and avoid "sidebar" like words included redundantly.
 <aside>, a portion related to the document's *main* content.
-Avoid "sidebar" like words included in label redundantly.
 
 ### contentinfo
+Label required if this exists >1, and avoid "footer" like words included redundantly.
 <footer>, only one, not descendant of <aside>, <article>, <main>, <nav>, <section>
-Avoid "footer" like words included in label redundantly.
 
 ### form
-<form>
+Label required for each, and avoid "form" like words included redundantly.
+<form> https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement
 
 ### search
-Avoid "search" like words included in label redundantly.
+Label required if this exists >1, and avoid "search" like words included redundantly.
 ```html
 <form id="search" role="search" aria-label="Sitewide">
   <label for="search-input">Search this site</label>
@@ -30,7 +31,6 @@ Avoid "search" like words included in label redundantly.
 
 ### main
 <main>, the only one primary content of a document
-Use 'aria-label', 'aria-labelledby'
 (Example) Skip navigation
 ```html
 <a href="#main-content">Skip to main content</a>
@@ -39,31 +39,38 @@ Use 'aria-label', 'aria-labelledby'
 ```
 
 ### navigation
-<nav> only for a major navigation(site, infra-page nav) links (otherwise links not required in <nav>)
-Avoid "navigation" like words included in label redundantly.
-Links are not required to be list.
+Label required if this exists >1, and avoid "navigation" like words included redundantly.
+<nav> is only for a major block of navigation links (site, infra-page nav)
 
 ### region
-generic landmark
-<section>  with a label
-(for such as a list of search results, a map display and its controls)
-should be identified by having a heading, but omit for like a secondary navigation menu.
-should only be used if there isn't a more specific element to represent it.
+Labelled <section> becomes generic landmark.
 
-If a content overflows beyond the container, Add 'role="region"' to the container and 'tabindex="0"' to the content area within it.
+If a content overflows beyond the container, add 'role="region"' to the container and 'tabindex="0"' to the content area within it to tell keyboard-only users its scrollable.
 
-- Usecases
-<article>:
-  a standalone, independently distrubutable or reusable.
-  a forum post, magazine or newspaper article, blog entry, product card, comment, interactive widget
-  should be identified by having a heading.
-  Contents related (a blog post, comments) can be nested like <article><article></article></article>.
-  Author information can be provided by <address>, but cannot for nested <article>.
+
+## Content sectioning
+Think this of an outline in a document.
+
+### heading
+itself creates a 'section' in a document outline implicitly, or explicitly with a surround <section>.
+
+### article
+standalone, independently distrubutable or reusable, like a forum post, magazine or newspaper article, blog entry, product card, comment, interactive widget.
+should be identified by having a 'heading'.
+can be nested in <article>.
+
+### section
+should only be used if there isn't a more specific element to represent it, like a list of search results, a map display and its controls.
+should be identified by having a 'heading', but can be omit for like some kind of secondary navigation or button bar 'section'.
+
 <div>: just for a styling wrapper
 
+### header, footer
+Must not nest in <header> or <footer>.
+Can be used in 'section' not as 'landmark', but no effects for accesibility.
 
-## sectioning content
-Elements here excluding <form> are 'sectioning content', normally should have a 'heading' (not necessary for <address>, and few exception).
+<address> provides any form of author info for its nearest ancestor <article> <body>, usually in <footer>.
+
 ### body
 - attr
 onblur
@@ -89,8 +96,3 @@ onresize: when the document has been resized.
 .onstorage: 'localStorage' has been modified in the nother document ctx. (has same attr)
 .onrejectionhandled, .onunhandledrejection
 .onunload
-
-### header, footer
-Must not nest <header> and <footer>s
-<footer> of a nearest ancentor sectioning content
-<header> which is not 'banner' is just <section>
