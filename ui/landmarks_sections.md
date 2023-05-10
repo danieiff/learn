@@ -42,6 +42,25 @@ Label required if this exists >1, and avoid "search" like words included redunda
 Label required if this exists >1, and avoid "navigation" like words included redundantly.
 <nav> is only for a major block of navigation links (site, infra-page nav)
 
+### comment
+new landmark role on WAI-ARIA 1.3
+can nest in other 'comment'.
+```html
+<p>
+  The last half of the song is a slow-rising crescendo that peaks at the
+  <mark aria-details="thread-1 thread-2">end of the guitar solo</mark>,
+  before fading away sharply.
+</p>
+
+<div role="comment" id="thread-1" data-author="chris">
+  <h3>Chris said</h3>
+  <p class="comment-text">I really think this moment could use more cowbell.</p>
+  <p><time datetime="2019-03-30T19:29">March 30 2019, 19:29</time></p>
+</div>
+
+<div role="comment" id="thread-2" data-author="chris">
+```
+
 ### region
 Labelled <section> becomes generic landmark.
 
