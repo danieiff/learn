@@ -42,7 +42,13 @@ pricing&limit: Introduction (->saved items)
 
 ## Web (TODO)
 ### Anonymous Auth
-Console > Auth > Sign-in Methods > enable Anonymous > source code
+Console > Auth > Sign-in Methods > enable Anonymous > write code
+
+### Email/Password
+Console > Auth > Sign-in Methods > enable Email/password > write code
+
+### Email Link
+Console > Auth > Sign-in Methods > enable Email/password, Email link (passwordless sign-in) > write code
 
 ### Link Multiple IdPs 
 sign-in credentials to the anonymous account -> future session available 
@@ -100,6 +106,10 @@ signInWithCredential(auth, newCredential).then((result) => {
 Auto clean-up after 30 days: *with Identity Platform* > Console > enable auto clean-up -> Free usage limits or billing quotas
 
 Unlink: `unlink(auth.currentUser,  providerData.providerId)`
+
+### Test
+`firebase auth:import users.json --hash-algo=scrypt --rounds=8 --mem-cost=14` populates test users 
+
 
 ## Admin (TODO all pages)
 authentication -> (service account credentials specific for project, not user) full access to the project resources

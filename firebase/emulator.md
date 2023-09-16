@@ -1,3 +1,5 @@
+`firebase emulators:start --project demo-*`
+
 ### firebase commands
 init emulators
 emulator:start 

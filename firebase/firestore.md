@@ -1,6 +1,6 @@
 - Add documents
 ```ts
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
 try {
   const docRef = await addDoc(collection(db, "users"), { first: "Ada", last: "Lovelace", born: 1815 })
   console.log("Document written with ID: ", docRef.id);
@@ -8,7 +8,7 @@ try {
 ```
 - Read data
 ```ts
-import { collection, getDocs } from "firebase/firestore"; 
+import { collection, getDocs } from "firebase/firestore";
 const querySnapshot = await getDocs(collection(db, "users"));
 querySnapshot.forEach((doc) => { console.log(`${doc.id} => ${doc.data()}`) })
 ```
@@ -29,7 +29,7 @@ await setDoc(doc(db, "cities", "LA"), {
   state: "CA",
   country: "USA",
   dateExample: Timestamp.fromDate(new Date("December 10, 1815")),
-}, { merge: false /* overwrite by default */ }) 
+}, { merge: false /* overwrite by default */ })
 ```
 - Add
 ```ts
@@ -94,7 +94,35 @@ async function deleteQueryBatch(db, query, resolve) {
   });
 }
 ```
-- From CLI: `firebase firestore:delete [options] <path>`
+From CLI: `firebase firestore:delete [options] <path>`
+
+- Get
+```ts
+const docSnap = await getDoc(docRef)
+if (docSnap.exists()) console.log("Document data:", docSnap.data())
+
+const querySnapshot = await getDocs(collection(db, "cities"))
+querySnapshot.forEach((doc) => { // doc.data() is never undefined for query doc snapshots
+  console.log(doc.id, " => ", doc.data())
+})
+
+```
+  - From cache: `const doc = await getDocFromCache(docRef)`
+
+
+## Query
+1. If indexes to support the query doesn't exist, it will return an error asking to build indexes.
+2. ORDER BY clauses must match the fields in the WHERE clauses and come in the same order.
+  By default, results are ordered by document ID. If you filter by any other field with anything other than an equality (==), add an ORDER BY clause for that field.
+3. Range (<, <=, >, >=) and not equals (!=, not-in) query clauses must all filter on the same field.
+
+```ts
+const q = query(collection(db, "cities"), where("capital", "==", true))
+const querySnapshot = await getDocs(q)
+querySnapshot.forEach((doc) => { // doc.data() is never undefined for query doc snapshots
+  console.log(doc.id, " => ", doc.data())
+})
+```
 
 
 ## TRANSACTION BATCH
@@ -217,13 +245,20 @@ Queries which requires the index but not set up will fail in error, and asked fo
 
 ## Admin
 Secured with IAM
-Security rules are not applied for requests from the server client. 
+Security rules are not applied for requests from the server client.
 - initialize admin sdk
 ```ts
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app')
 initializeApp(/* if on Google Cloud, { credential: applicationDefault() } */)
 // if on your own server, const serviceAccount = require('./path/to/serviceAccountKeyInGCConsole.json') and pass it as a credential property.
 const db = getFirestore();
+```
+- list subcollections of a document (Server client library only)
+```ts
+const sfRef = db.collection('cities').doc('SF')
+const collections = await sfRef.listCollections()
+collections.forEach(collection => { console.log('Found subcollection with id:', collection.id) })
+
 ```
 ### Data Bundles
 For cache. As binary file.
@@ -241,7 +276,7 @@ var bundleBuffer = bundle.add(docSnapshot); // Add a document
                    .build()
 // Then save this as like 'bundle.txt' file
 ```
-- Serve bundles 
+- Serve bundles
 CDN, Cloud Storage, etc
 ```ts
 const fs = require('fs');
@@ -279,6 +314,16 @@ async function fetchFromBundle() {
 }
 ```
 
+## TTL (time-to-live) Policy
+permissions: datastore.indexes.list datastore.indexes.get datastore.indexes.update
+From GC Console/Cli
+- Prepare: `gcloud components update`
+- Create: `gcloud firestore fields ttls update ttl_field --collection-group=collection_group_name --enable-ttl`
+- View: `gcloud firestore fields ttls list  --collection-group=collection_group_name`
+  View operation details: `gcloud firestore operations list`
+- Disable: `gcloud firestore fields ttls update ttl_field --collection-group=collection_group_name --disable-ttl`
+Monitor from Cloud Monitoring
+
 
 ## Firestore Lite
 - single document fetches, query execution, and document updates
@@ -288,3 +333,4 @@ async function fetchFromBundle() {
   - Persistence helpers. The enableIndexedDBPersistence, enableMultiTabIndexedDbPersistence, and clearIndexedDbPersistence methods are not included.
   - Firestore bundles. The loadBundle method and related methods, and the LoadBundleTask and LoadBundleTaskProgress objects are not included.
 - Add documents
+
