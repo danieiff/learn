@@ -9,49 +9,49 @@ ssh-keygen -t rsa (overwrite previous ssh key in ~/.ssh)
 //# Copy ~/.ssh/id_rsa.pub and paste it to https://github.com/settings/ssh
 ssh -T git@github.com //# For test
 
-- ss -net
-- base64
-- tar
-- ln -s {destination} {original (absolute path)}
-- find
-- grep
-- script {file} -> exit
-- curl
-  `cat data.json | curl -sS -X POST -d @- http://example.com/boopoo` pass @- to -d
-- awk
-- xargs
-- ls
-- cd
-- cp
-- mv
-- rm
-- cat
-- echo (printf)
-- touch
-- mkdir
-- man
-- trap
-- which
-- cron `'crontab -e` `sudo service cron start` `sudo service cron stop`
-- ~- (previous directory)
-- >
-- > >
-- 2> (redirect error) `{BADCOMMAND} 2> error.txt`
-- | (pipe)
-- ;
-- - (wildcard >= 0)
-- ? (wildcard 1 character)
-- bc, expr, (()), $(())
+-   ss -net
+-   base64
+-   tar
+-   ln -s {destination} {original (absolute path)}
+-   find
+-   grep
+-   script {file} -> exit
+-   curl
+    `cat data.json | curl -sS -X POST -d @- http://example.com/boopoo` pass @- to -d
+-   awk
+-   xargs
+-   ls
+-   cd
+-   cp
+-   mv
+-   rm
+-   cat
+-   echo (printf)
+-   touch
+-   mkdir
+-   man
+-   trap
+-   which
+-   cron `'crontab -e` `sudo service cron start` `sudo service cron stop`
+-   ~- (previous directory)
+-   >
+-   > >
+-   2> (redirect error) `{BADCOMMAND} 2> error.txt`
+-   | (pipe)
+-   ;
+-   -   (wildcard >= 0)
+-   ? (wildcard 1 character)
+-   bc, expr, (()), $(())
 `while true; do echo "$RANDOM\*6.0/32767+1" | bc; sleep 1; done`
 
 `echo "\u3075\u304c" | python -c 'import sys; print(sys.stdin.buffer.readline().decode("unicode-escape"))'`
 
 `SCRIPTDIR=$(cd $(dirname $BASH_SOURCE); pwd)`
 
-- $*, "$\*", $@, "$@"
+-   $*, "$\*", $@, "$@"
 
-- `echo ${HOGE:-hoge}    # hoge    $HOGEがNULLの場合に"hoge"に置き換える。代入はされない。`
-- `echo ${FUGA:=fuga}    # fuga    $FUGAがNULLの場合に"fuga"に置き換え、かつ、代入もする。`
+-   `echo ${HOGE:-hoge}    # hoge    $HOGEがNULLの場合に"hoge"に置き換える。代入はされない。`
+-   `echo ${FUGA:=fuga}    # fuga    $FUGAがNULLの場合に"fuga"に置き換え、かつ、代入もする。`
 
 ```sh
 # change suffix of files
@@ -64,7 +64,7 @@ for F in *.tmp;do echo ${F%.tmp};done
 myfilename=${0##*/}    # same as basename
 ```
 
-- $? exit code
+-   $? exit code
 
 ```sh
 echo '--- $* ---'; for P in $*; do echo $P; done
@@ -480,10 +480,68 @@ zk
 ```
 
 ### port
+
 sudo lsof
 sudo lsof -nP -iTCP -sTCP:LISTEN | head -5
 sudo systemctl stop postgresql
 npx kill-port
 
 sudo lsof -i -P | grep "LISTEN"
-sudo kill <killしたいportのPID>
+sudo kill <kill したい port の PID>
+
+### docker
+
+`<C-p><C-q>` dettach from container
+`docker exec -u 0 -it <container> bash` login as root
+` docker attach` login as user
+
+
+### WSL
+
+if [ "$WSLENV" ]; then
+  WslLocalAppData="$(wslpath "$(powershell.exe \$Env:LocalAppData)" | tr -d "\r")"
+  cp "$DOTFILES_DIR/windows-terminal-settings.json" "$WslLocalAppData/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
+  ln -fs "$WslLocalAppData/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "$DOTFILES_DIR/_windows-terminal-settings.json"
+
+  ## SSH https://futurismo.biz/archives/6862/#-nat-
+  # sudo apt install -y openssh-server
+  ### Run in Powershell as Admin
+  # $wsl_ipaddress1 = (wsl hostname -I).split(" ", 2)[0]
+  # netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=22
+  # netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=22 connectaddress=$wsl_ipaddress1 connectport=22
+  # netsh interface portproxy show v4tov4
+  # Foreach ( $dir in "Inbound","Outbound" ) { New-NetFireWallRule -DisplayName 'WSL 2 Firewall Unlock' -Direction Outbound -LocalPort 22 -Action Allow -Protocol TCP }
+
+  # vi /etc/ssh/sshd_config # Edit yes/no for PubkeyAuthentication, PasswordAuthentication
+  # sudo chmod 600 ~/.ssh/authorized_keys
+
+  # ssh-keygen && ssh-copy-id <user@host>
+  # # Opt) Generate public domain e.g.) https://www.noip.com/
+  # # Config Wifi router to open port or proxy to different port from default of ssh
+  # dev() {
+  #   ssh -L "${1:-3000}:localhost:${1:-3000}" <user@host>
+  # }
+  # sudo systemctl start sshd
+
+  ## Chrome (google-chrome)
+  curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  set +e
+  sudo dpkg -i google-chrome-stable_current_amd64.deb
+  sudo apt install language-pack-ja fonts-ipafont fonts-ipaexfont
+  set -e
+  sudo apt install --fix-broken -y
+  fc-cache -fv
+fi
+
+## ReactNative Android
+# mkdir ~/Android && ln -s /mnt/c/Users/Hirohisa/AppData/Local/Android/Sdk ~/Android/sdk
+# ln -s ~/Android/Sdk/platform-tools/adb.exe ~/Android/Sdk/platform-tools/adb
+# ln -s ~/Android/Sdk/platform-tools/emulator/emulator.exe ~/Android/Sdk/emulator/emulator
+ANDROID_HOME=~/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+alias emu='$ANDROID_HOME/emulator/emulator @Pixel_4_API_30'
+alias emu-list='$ANDROID_HOME/emulator/emulator -list-avds'
+
+# Foreach ( $port in 19000,19001,19002 ) { netsh interface portproxy add v4tov4 listenport=$port connectport=$port connectaddress=$($(wsl hostname -I).Trim()) }
+# Foreach ( $dir in "Inbound","Outbound" ) { New-NetFireWallRule -DisplayName 'WSL Expo ports for LAN development' -Direction $dir -LocalPort 19000-19002 -Action Allow -Protocol TCP }
+alias rn-expo='REACT_NATIVE_PACKAGER_HOSTNAME=$(/mnt/c/Windows/system32/ipconfig.exe | grep -m 1 "IPv4 Address" | sed "s/.*: //") npx expo start'
